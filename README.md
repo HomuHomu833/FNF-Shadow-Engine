@@ -19,6 +19,7 @@ For the lore of this engine see [ORIGIN.md](./ORIGIN.md).
 - Slightly more accurate FPS and less RAM Usage
 - Unironically winning icons support
 - Some 0.6.3 and 1.0 compability
+- Little bit Null Safety
 - Linux ARM support (FNF on Raspberry Pi baby)
 - Kade Engine Results Screen
 - PlayState has `changeNoteSkin` for easy in-game note skin changing
