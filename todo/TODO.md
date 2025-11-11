@@ -7,5 +7,5 @@
 - Add Base Game Files
 - Add our UI for editors
 - Add multikey support(?)
-- Add FunkinModchart (?)
+- Add FunkinModchart(?)
 - Add Scritable Classes (eg Class that is empty so modders can do shit with it)
