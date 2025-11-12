@@ -233,7 +233,7 @@ class Project extends HXProject
 		if (MODCHARTS_ALLOWED.isEnabled())
 		{
 			setHaxedef('FM_ENGINE', 'Shadow');
-			setHaxedef('FM_ENGINE_VERSION', '0.7'); // SE based with 0.7.3
+			setHaxedef('FM_ENGINE_VERSION', '0.7'); // SE based with PE 0.7.3
 
 			addMacroFlag('modchart.backend.macros.Macro.includeFiles()');
 			addMacroFlag("addMetadata('@:build(modchart.backend.macros.Macro.buildFlxCamera())','flixel.FlxCamera')");
