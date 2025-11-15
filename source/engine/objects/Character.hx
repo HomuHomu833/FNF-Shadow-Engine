@@ -1,7 +1,7 @@
 package objects;
 
 import flixel.animation.FlxAnimationController;
-import backend.animation.PsychAnimationController;
+import backend.animation.PsychAnimateController;
 import flixel.util.FlxSort;
 import flixel.util.FlxDestroyUtil;
 import openfl.utils.AssetType;
@@ -92,9 +92,7 @@ class Character extends FlxAnimate
 	public function new(x:Float, y:Float, ?character:String = 'bf', ?isPlayer:Bool = false)
 	{
 		super(x, y);
-
-		animation = new PsychAnimationController(this);
-
+		
 		animOffsets = new Map<String, Array<Dynamic>>();
 		curCharacter = character;
 		this.isPlayer = isPlayer;
@@ -137,6 +135,13 @@ class Character extends FlxAnimate
 		recalculateDanceIdle();
 		dance();
 	}
+	override function initVars()
+	{
+		super.initVars();
+		anim = new PsychAnimateController(this);
+		skew = new FlxPoint();
+		animation = anim;
+	}
 
 	override public function isOnScreen(?camera:FlxCamera):Bool
 	{
@@ -173,7 +178,7 @@ class Character extends FlxAnimate
 			if (!Paths.fileExists('images/${haxe.io.Path.withExtension(json.image, 'png')}', IMAGE))
 			{
 				spriteType = TEXTURE_ATLAS;
-				frames = Paths.getTextureAtlas(json.image);
+				frames = Paths.getTextureAtlas(json.image, {swfMode: true, cacheOnLoad: true});
 			}
 			else
 			{
@@ -246,6 +251,7 @@ class Character extends FlxAnimate
 	{
 		if (debugMode || isAnimationNull())
 		{
+			trace('animation null');
 			super.update(elapsed);
 			return;
 		}
@@ -325,7 +331,7 @@ class Character extends FlxAnimate
 	inline public function getAnimaionController():FlxAnimationController
 	{
 		if (spriteType == TEXTURE_ATLAS)
-			return cast anim;
+			return cast this.anim;
 		else
 			return animation;
 	}
