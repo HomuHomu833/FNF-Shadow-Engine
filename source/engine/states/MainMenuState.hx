@@ -150,6 +150,7 @@ class MainMenuState extends MusicBeatState
 							if (PlayState.SONG != null)
 							{
 								PlayState.SONG.playerArrowSkin = null;
+								PlayState.SONG.opponentArrowSkin = null;
 								PlayState.SONG.splashSkin = null;
 								PlayState.stageUI = 'normal';
 							}
