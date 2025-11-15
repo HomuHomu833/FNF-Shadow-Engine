@@ -1,5 +1,6 @@
 package objects;
 
+import flixel.animation.FlxAnimationController;
 import backend.animation.PsychAnimationController;
 import flixel.util.FlxSort;
 import flixel.util.FlxDestroyUtil;
@@ -7,6 +8,7 @@ import openfl.utils.AssetType;
 import openfl.utils.Assets;
 import backend.Song;
 import backend.Section;
+import animate.FlxAnimate;
 
 typedef CharacterFile =
 {
@@ -26,6 +28,13 @@ typedef CharacterFile =
 	@:optional var _editor_isPlayer:Null<Bool>;
 }
 
+enum CharacterSpriteType
+{
+	SPRITE;
+	MULTI_ATLAS;
+	TEXTURE_ATLAS;
+}
+
 typedef AnimArray =
 {
 	var anim:String;
@@ -36,7 +45,7 @@ typedef AnimArray =
 	var offsets:Array<Int>;
 }
 
-class Character extends FlxSprite
+class Character extends FlxAnimate
 {
 	/**
 	 * In case a character is missing, it will use this on its place
@@ -78,7 +87,7 @@ class Character extends FlxSprite
 	public var editorIsPlayer:Null<Bool> = null;
 	public var isAnimateAtlas:Bool = false;
 
-	public var isMultiAtlas:Bool = false;
+	public var spriteType:CharacterSpriteType = SPRITE;
 
 	public function new(x:Float, y:Float, ?character:String = 'bf', ?isPlayer:Bool = false)
 	{
@@ -131,7 +140,7 @@ class Character extends FlxSprite
 
 	override public function isOnScreen(?camera:FlxCamera):Bool
 	{
-		if (isMultiAtlas)
+		if (spriteType == MULTI_ATLAS)
 			return true; // flixel is stoobid
 
 		if (camera == null)
@@ -144,10 +153,10 @@ class Character extends FlxSprite
 	{
 		scale.set(1, 1);
 		updateHitbox();
-		isMultiAtlas = !(json.image is String);
 
-		if (isMultiAtlas)
+		if (!(json.image is String))
 		{
+			spriteType = MULTI_ATLAS;
 			frames = Paths.getAtlas(json.image[0]);
 			final split:Array<String> = json.image;
 			if (frames != null)
@@ -161,7 +170,16 @@ class Character extends FlxSprite
 		}
 		else
 		{
-			frames = Paths.getAtlas(json.image);
+			if (!Paths.fileExists('images/${haxe.io.Path.withExtension(json.image, 'png')}', IMAGE))
+			{
+				spriteType = TEXTURE_ATLAS;
+				frames = Paths.getTextureAtlas(json.image);
+			}
+			else
+			{
+				spriteType = SPRITE;
+				frames = Paths.getAtlas(json.image);
+			}
 			imageFile = json.image;
 		}
 
@@ -201,10 +219,19 @@ class Character extends FlxSprite
 				var animLoop:Bool = !!anim.loop; // Bruh
 				var animIndices:Array<Int> = anim.indices;
 
-				if (animIndices != null && animIndices.length > 0)
-					animation.addByIndices(animAnim, animName, animIndices, "", animFps, animLoop);
-				else
-					animation.addByPrefix(animAnim, animName, animFps, animLoop);
+				switch (spriteType)
+				{
+					case TEXTURE_ATLAS:
+						if (animIndices != null && animIndices.length > 0)
+							this.anim.addBySymbolIndices(animAnim, animName, animIndices, animFps, animLoop);
+						else
+							this.anim.addBySymbol(animAnim, animName, animFps, animLoop);
+					default:
+						if (animIndices != null && animIndices.length > 0)
+							animation.addByIndices(animAnim, animName, animIndices, "", animFps, animLoop);
+						else
+							animation.addByPrefix(animAnim, animName, animFps, animLoop);
+				}
 
 				if (anim.offsets != null && anim.offsets.length > 1)
 					addOffset(anim.anim, anim.offsets[0], anim.offsets[1]);
@@ -217,7 +244,7 @@ class Character extends FlxSprite
 
 	override function update(elapsed:Float)
 	{
-		if (debugMode || animation.curAnim == null)
+		if (debugMode || isAnimationNull())
 		{
 			super.update(elapsed);
 			return;
@@ -269,14 +296,14 @@ class Character extends FlxSprite
 	}
 
 	inline public function isAnimationNull():Bool
-		return (animation.curAnim == null);
+		return getAnimaionController().curAnim == null;
 
 	inline public function getAnimationName():String
 	{
 		var name:String = '';
 		@:privateAccess
 		if (!isAnimationNull())
-			name = animation.curAnim.name;
+			name = getAnimaionController().curAnim.name;
 		return (name != null) ? name : '';
 	}
 
@@ -284,7 +311,7 @@ class Character extends FlxSprite
 	{
 		if (isAnimationNull())
 			return false;
-		return animation.curAnim.finished;
+		return getAnimaionController().curAnim.finished;
 	}
 
 	public function finishAnimation():Void
@@ -292,7 +319,15 @@ class Character extends FlxSprite
 		if (isAnimationNull())
 			return;
 
-		animation.curAnim.finish();
+		getAnimaionController().curAnim.finish();
+	}
+
+	inline public function getAnimaionController():FlxAnimationController
+	{
+		if (spriteType == TEXTURE_ATLAS)
+			return cast anim;
+		else
+			return animation;
 	}
 
 	public var animPaused(get, set):Bool;
@@ -301,7 +336,7 @@ class Character extends FlxSprite
 	{
 		if (isAnimationNull())
 			return false;
-		return animation.curAnim.paused;
+		return getAnimaionController().curAnim.paused;
 	}
 
 	private function set_animPaused(value:Bool):Bool
@@ -309,7 +344,7 @@ class Character extends FlxSprite
 		if (isAnimationNull())
 			return value;
 
-		animation.curAnim.paused = value;
+		getAnimaionController().curAnim.paused = value;
 
 		return value;
 	}
@@ -342,8 +377,8 @@ class Character extends FlxSprite
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void
 	{
 		specialAnim = false;
-		animation.play(AnimName, Force, Reversed, Frame);
-
+		getAnimaionController().play(AnimName, Force, Reversed, Frame);
+		
 		if (animOffsets.exists(AnimName))
 		{
 			var daOffset = animOffsets.get(AnimName);
@@ -420,6 +455,9 @@ class Character extends FlxSprite
 
 	public function quickAnimAdd(name:String, anim:String)
 	{
-		animation.addByPrefix(name, anim, 24, false);
+		if (spriteType == TEXTURE_ATLAS)
+			this.anim.addBySymbol(name, name, 24, false);
+		else
+			animation.addByPrefix(name, anim, 24, false);
 	}
 }

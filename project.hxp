@@ -195,6 +195,7 @@ class Project extends HXProject
 		setHaxedef("HXCPP_STACK_LINE");
 		setHaxedef("HXCPP_STACK_TRACE");
 		setHaxedef("HXCPP_CATCH_SEGV");
+		setHaxedef("lime_disable_assets_version");
 
 		if (isAndroid() && !isDebug())
 		{
@@ -262,6 +263,7 @@ class Project extends HXProject
 		includeHaxelib("flixel");
 		includeHaxelib("flixel-ui");
 		includeHaxelib("flixel-addons");
+		includeHaxelib("flixel-aniamte");
 
 		if (LUA_ALLOWED.isEnabled())
 			includeHaxelib("hxluajit");
