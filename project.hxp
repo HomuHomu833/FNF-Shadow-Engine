@@ -276,7 +276,7 @@ class Project extends HXProject
 		includeHaxelib("flixel");
 		includeHaxelib("flixel-ui");
 		includeHaxelib("flixel-addons");
-		includeHaxelib("flixel-aniamte");
+		includeHaxelib("flixel-animate");
 
 		if (LUA_ALLOWED.isEnabled())
 			includeHaxelib("hxluajit");
