@@ -102,9 +102,6 @@ class HScript extends SScript
 		set('PlayState', PlayState);
 		set('Paths', Paths);
 		set('CoolUtil', CoolUtil);
-		#if MODCHARTS_ALLOWED
-		set('ModchartManager', ModchartManager);
-		#end
 		set('StorageUtil', StorageUtil);
 		set('Conductor', Conductor);
 		set('ClientPrefs', ClientPrefs);
@@ -120,6 +117,29 @@ class HScript extends SScript
 		#if VIDEOS_ALLOWED
 		set('VideoSpriteManager', backend.VideoSpriteManager);
 		set('VideoManager', backend.VideoManager);
+		#end
+
+		#if MODCHARTS_ALLOWED
+		set('Math', Math);
+		set('ModchartEditorState', modcharting.ModchartEditorState);
+		set('ModchartEvent', modcharting.ModchartEvent);
+		set('ModchartEventManager', modcharting.ModchartEventManager);
+		set('ModchartFile', modcharting.ModchartFile);
+		set('ModchartFuncs', modcharting.ModchartFuncs);
+		set('ModchartMusicBeatState', modcharting.ModchartMusicBeatState);
+		set('ModchartUtil', modcharting.ModchartUtil);
+		for (i in ['mod', 'Modifier'])
+			set(i, modcharting.Modifier);
+		set('ModifierSubValue', modcharting.Modifier.ModifierSubValue);
+		set('ModTable', modcharting.ModTable);
+		set('NoteMovement', modcharting.NoteMovement);
+		set('NotePositionData', modcharting.NotePositionData);
+		set('Playfield', modcharting.Playfield);
+		set('PlayfieldRenderer', modcharting.PlayfieldRenderer);
+		set('SimpleQuaternion', modcharting.SimpleQuaternion);
+		set('SustainStrip', modcharting.SustainStrip);
+		
+		modcharting.ModchartFuncs.loadHScriptFunctions(this);
 		#end
 
 		// Functions & Variables
@@ -505,6 +525,13 @@ class HScript extends SScript
 
 		super.destroy();
 	}
+
+	#if MODCHARTS_ALLOWED
+	public function initMod(mod:modcharting.Modifier)
+	{
+		call("initMod", [mod]);
+	}
+	#end
 }
 
 class CustomFlxColor

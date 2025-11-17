@@ -1734,6 +1734,7 @@ class FunkinLua
 		ShaderFunctions.implement(this);
 		DeprecatedFunctions.implement(this);
 		MobileFunctions.implement(this);
+		#if MODCHARTS_ALLOWED modcharting.ModchartFuncs.loadLuaFunctions(this); #end
 		#if android AndroidFunctions.implement(this); #end
 
 		try

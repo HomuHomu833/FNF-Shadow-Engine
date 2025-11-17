@@ -5,6 +5,9 @@ import backend.NoteTypesConfig;
 import shaders.RGBPalette;
 import shaders.RGBPalette.RGBShaderReference;
 import objects.StrumNote;
+#if MODCHARTS_ALLOWED
+import flixel.addons.effects.FlxSkewedSprite;
+#end
 import flixel.graphics.FlxGraphic;
 import flixel.math.FlxRect;
 
@@ -36,7 +39,7 @@ typedef NoteSplashData =
  * 
  * If you want to make a custom note type, you should search for: "function set_noteType"
 **/
-class Note extends FlxSprite
+class Note extends #if MODCHARTS_ALLOWED FlxSkewedSprite #else FlxSprite #end
 {
 	public var extraData:Map<String, Dynamic> = new Map<String, Dynamic>();
 
@@ -72,6 +75,11 @@ class Note extends FlxSprite
 	public static var globalRgbShaders:Array<RGBPalette> = [];
 
 	public var inEditor:Bool = false;
+
+	#if MODCHARTS_ALLOWED
+	public var mesh:modcharting.SustainStrip = null;
+  	public var z:Float = 0;
+	#end
 
 	public var animSuffix:String = '';
 	public var gfNote:Bool = false;
