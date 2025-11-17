@@ -476,20 +476,21 @@ class Paths
 	public static function getTextureAtlas(key:String, ?library:String = null, ?settings:FlxAnimateSettings):FlxAnimateFrames
 	{
 		var animateFolder:String = getPath('images/$key', library);
-		#if MODS_ALLOWED
-		var mdosExists:Bool = false;
-
-		var modsAnimate:String = modsImages(key);
-		if (FileSystem.exists(modsAnimate))
-			mdosExists = true;
 
 		if (settings == null)
 			settings = {};
 
 		if (settings.filterQuality == null && ClientPrefs.data.lowQuality)
 			settings.filterQuality = FilterQuality.LOW;
+
+		#if MODS_ALLOWED
+		var modsExists:Bool = false;
+
+		var modsAnimate:String = modsImages(key);
+		if (FileSystem.exists(modsAnimate))
+			modsExists = true;
 		
-		return FlxAnimateFrames.fromAnimate(mdosExists ? modsAnimate : animateFolder, settings);
+		return FlxAnimateFrames.fromAnimate(modsExists ? modsAnimate : animateFolder, settings);
 		#else
 		return FlxAnimateFrames.fromAnimate(animateFolder, settings);
 		#end
