@@ -21,7 +21,7 @@ jobs:
             artifactName: windowsBuild-x86_64
             artifactPath: export\release\windows\bin\*
           - name: Linux x86_64
-            os: ubuntu-22.04
+            os: ubuntu-24.04
             buildArgs: "linux -final -D officialBuild"
             assetType: S3TC
             artifactName: linuxBuild-x86_64
