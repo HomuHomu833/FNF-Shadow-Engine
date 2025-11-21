@@ -198,6 +198,7 @@ class Project extends HXProject
 		setHaxedef("HXCPP_STACK_TRACE");
 		setHaxedef("HXCPP_CATCH_SEGV");
 		setHaxedef("lime_disable_assets_version");
+		//setHaxedef("lime_use_old_deltatime");
 
 		if (isAndroid() && !isDebug())
 		{
