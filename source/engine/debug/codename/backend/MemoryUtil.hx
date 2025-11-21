@@ -21,9 +21,9 @@ using StringTools;
 #include <windows.h>
 #include <psapi.h>
 #elif defined(__APPLE__) && defined(__MACH__)
+#include <mach/mach.h>
 #include <sys/types.h>
 #include <sys/sysctl.h>
-#include <mach/mach.h>
 #elif defined(__linux__) || defined(__gnu_linux__) || defined(__ANDROID__)
 #include <sys/sysinfo.h>
 #endif
@@ -59,18 +59,18 @@ final class MemoryUtil
 	')
 	#elseif (mac || ios)
 	@:functionCode('
-		struct xsw_usage swapInfo;
-		size_t size = sizeof(swapInfo);
+	int mib [] = { CTL_HW, HW_MEMSIZE };
+	int64_t value = 0;
+	size_t length = sizeof(value);
 
-		if (sysctlbyname("vm.swapusage", &swapInfo, &size, nullptr, 0) != 0) {
-			perror("sysctlbyname");
-			return 1;
-		}
+	if(-1 == sysctl(mib, 2, &value, &length, NULL, 0))
+		return -1; // An error occurred
 
-		return swapInfo.xsu_total / 1024 / 1024;
+	return value / 1024 / 1024;
 	')
 	#elseif windows
 	@:functionCode("
+		// simple but effective code
 		unsigned long long allocatedRAM = 0;
 		GetPhysicallyInstalledSystemMemory(&allocatedRAM);
 		return (allocatedRAM / 1024);
