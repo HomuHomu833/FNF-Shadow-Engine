@@ -158,6 +158,7 @@ class Character extends FlxAnimate
 		if (!(json.image is String))
 		{
 			spriteType = MULTI_ATLAS;
+			isAnimateAtlas = false;
 			isMultiAtlas = true;
 			frames = Paths.getAtlas(json.image[0]);
 			final split:Array<String> = json.image;
@@ -176,11 +177,15 @@ class Character extends FlxAnimate
 				&& !Paths.fileExists('images/${haxe.io.Path.withExtension(json.image, Paths.GPU_IMAGE_EXT)}', Paths.getImageAssetType(Paths.GPU_IMAGE_EXT)))
 			{
 				spriteType = TEXTURE_ATLAS;
+				isAnimateAtlas = true;
+				isMultiAtlas = false;
 				frames = Paths.getTextureAtlas(json.image);
 			}
 			else
 			{
 				spriteType = SPRITE;
+				isAnimateAtlas = false;
+				isMultiAtlas = false;
 				frames = Paths.getAtlas(json.image);
 			}
 			imageFile = json.image;

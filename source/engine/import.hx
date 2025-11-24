@@ -80,6 +80,10 @@ import flixel.tweens.FlxTween;
 import flixel.group.FlxSpriteGroup;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.system.FlxAssets.FlxShader;
+
+// flixel-animte (texture atlas)
+import animate.FlxAnimate;
+
 import haxe.Json;
 
 using StringTools;
