@@ -524,6 +524,7 @@ class CharacterEditorState extends MusicBeatState
 
 	var animationDropDown:FlxUIDropDownMenu;
 	var animationInputText:FlxUIInputText;
+	var animationFrameLabelCheckBox:FlxUICheckBox;
 	var animationNameInputText:FlxUIInputText;
 	var animationIndicesInputText:FlxUIInputText;
 	var animationFramerate:FlxUINumericStepper;
@@ -535,6 +536,7 @@ class CharacterEditorState extends MusicBeatState
 		tab_group.name = "Animations";
 
 		animationInputText = new FlxUIInputText(15, 85, 80, '', 8);
+		animationFrameLabelCheckBox = new FlxUICheckBox(15 + 170, animationInputText.y - 55, null, null, "Frame Label (Textuer Atlas):", 200);
 		animationNameInputText = new FlxUIInputText(animationInputText.x, animationInputText.y + 35, 150, '', 8);
 		animationIndicesInputText = new FlxUIInputText(animationNameInputText.x, animationNameInputText.y + 40, 250, '', 8);
 		animationFramerate = new FlxUINumericStepper(animationInputText.x + 170, animationInputText.y, 1, 24, 0, 240, 0);
@@ -545,6 +547,7 @@ class CharacterEditorState extends MusicBeatState
 			var selectedAnimation:Int = Std.parseInt(pressed);
 			var anim:AnimArray = character.animationsArray[selectedAnimation];
 			animationInputText.text = anim.anim;
+			animationFrameLabelCheckBox.checked = anim.isFrameLabel;
 			animationNameInputText.text = anim.name;
 			animationLoopCheckBox.checked = anim.loop;
 			animationFramerate.value = anim.fps;
@@ -589,6 +592,7 @@ class CharacterEditorState extends MusicBeatState
 
 			var addedAnim:AnimArray = newAnim(animationInputText.text, animationNameInputText.text);
 			addedAnim.fps = Math.round(animationFramerate.value);
+			addedAnim.isFrameLabel = animationFrameLabelCheckBox.checked;
 			addedAnim.loop = animationLoopCheckBox.checked;
 			addedAnim.indices = indices;
 			addedAnim.offsets = lastOffsets;
@@ -642,6 +646,7 @@ class CharacterEditorState extends MusicBeatState
 		tab_group.add(new FlxText(animationIndicesInputText.x, animationIndicesInputText.y - 18, 0, 'ADVANCED - Animation Indices:'));
 
 		tab_group.add(animationInputText);
+		tab_group.add(animationFrameLabelCheckBox);
 		tab_group.add(animationNameInputText);
 		tab_group.add(animationIndicesInputText);
 		tab_group.add(animationFramerate);

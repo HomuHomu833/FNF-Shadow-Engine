@@ -1,7 +1,6 @@
 package objects;
 
 import flixel.animation.FlxAnimationController;
-import backend.animation.PsychAnimateController;
 import flixel.util.FlxSort;
 import flixel.util.FlxDestroyUtil;
 import openfl.utils.AssetType;
@@ -25,14 +24,8 @@ typedef CharacterFile =
 	var no_antialiasing:Bool;
 	var healthbar_colors:Array<Int>;
 	var vocals_file:String;
-	@:optional var _editor_isPlayer:Null<Bool>;
-}
-
-enum CharacterSpriteType
-{
-	SPRITE;
-	MULTI_ATLAS;
-	TEXTURE_ATLAS;
+	@:optional
+	var _editor_isPlayer:Null<Bool>;
 }
 
 typedef AnimArray =
@@ -43,6 +36,15 @@ typedef AnimArray =
 	var loop:Bool;
 	var indices:Array<Int>;
 	var offsets:Array<Int>;
+	@:optional
+	var isFrameLabel:Bool;
+}
+
+enum CharacterSpriteType
+{
+	SPRITE;
+	MULTI_ATLAS;
+	TEXTURE_ATLAS;
 }
 
 class Character extends FlxAnimate
@@ -137,14 +139,6 @@ class Character extends FlxAnimate
 		dance();
 	}
 
-	override function initVars()
-	{
-		super.initVars();
-		anim = new PsychAnimateController(this);
-		skew = new FlxPoint();
-		animation = anim;
-	}
-
 	override public function isOnScreen(?camera:FlxCamera):Bool
 	{
 		if (spriteType == MULTI_ATLAS)
@@ -231,15 +225,25 @@ class Character extends FlxAnimate
 				switch (spriteType)
 				{
 					case TEXTURE_ATLAS:
-						if (animIndices != null && animIndices.length > 0)
-							this.anim.addBySymbolIndices(animAnim, animName, animIndices, animFps, animLoop);
+						if (anim.isFrameLabel)
+						{
+							if (animIndices != null && animIndices.length > 0)
+								this.anim.addByFrameLabelIndices(animAnim, animName, animIndices, animFps, animLoop);
+							else
+								this.anim.addByFrameLabel(animAnim, animName, animFps, animLoop);
+						}
 						else
-							this.anim.addBySymbol(animAnim, animName, animFps, animLoop);
+						{
+							if (animIndices != null && animIndices.length > 0)
+								this.anim.addBySymbolIndices(animAnim, animName, animIndices, animFps, animLoop);
+							else
+								this.anim.addBySymbol(animAnim, animName, animFps, animLoop);
+						}
 					default:
 						if (animIndices != null && animIndices.length > 0)
-							animation.addByIndices(animAnim, animName, animIndices, "", animFps, animLoop);
+							this.anim.addByIndices(animAnim, animName, animIndices, "", animFps, animLoop);
 						else
-							animation.addByPrefix(animAnim, animName, animFps, animLoop);
+							this.anim.addByPrefix(animAnim, animName, animFps, animLoop);
 				}
 
 				if (anim.offsets != null && anim.offsets.length > 1)
@@ -255,7 +259,6 @@ class Character extends FlxAnimate
 	{
 		if (debugMode || isAnimationNull())
 		{
-			trace('animation null');
 			super.update(elapsed);
 			return;
 		}
@@ -306,14 +309,14 @@ class Character extends FlxAnimate
 	}
 
 	inline public function isAnimationNull():Bool
-		return getAnimaionController().curAnim == null;
+		return anim.curAnim == null;
 
 	inline public function getAnimationName():String
 	{
 		var name:String = '';
 		@:privateAccess
 		if (!isAnimationNull())
-			name = getAnimaionController().curAnim.name;
+			name = anim.curAnim.name;
 		return (name != null) ? name : '';
 	}
 
@@ -321,7 +324,7 @@ class Character extends FlxAnimate
 	{
 		if (isAnimationNull())
 			return false;
-		return getAnimaionController().curAnim.finished;
+		return anim.curAnim.finished;
 	}
 
 	public function finishAnimation():Void
@@ -329,15 +332,7 @@ class Character extends FlxAnimate
 		if (isAnimationNull())
 			return;
 
-		getAnimaionController().curAnim.finish();
-	}
-
-	inline public function getAnimaionController():FlxAnimationController
-	{
-		if (spriteType == TEXTURE_ATLAS)
-			return cast this.anim;
-		else
-			return animation;
+		anim.curAnim.finish();
 	}
 
 	public var animPaused(get, set):Bool;
@@ -346,7 +341,7 @@ class Character extends FlxAnimate
 	{
 		if (isAnimationNull())
 			return false;
-		return getAnimaionController().curAnim.paused;
+		return anim.curAnim.paused;
 	}
 
 	private function set_animPaused(value:Bool):Bool
@@ -354,7 +349,7 @@ class Character extends FlxAnimate
 		if (isAnimationNull())
 			return value;
 
-		getAnimaionController().curAnim.paused = value;
+		anim.curAnim.paused = value;
 
 		return value;
 	}
@@ -387,7 +382,7 @@ class Character extends FlxAnimate
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void
 	{
 		specialAnim = false;
-		getAnimaionController().play(AnimName, Force, Reversed, Frame);
+		anim.play(AnimName, Force, Reversed, Frame);
 		
 		if (animOffsets.exists(AnimName))
 		{
@@ -468,6 +463,6 @@ class Character extends FlxAnimate
 		if (spriteType == TEXTURE_ATLAS)
 			this.anim.addBySymbol(name, name, 24, false);
 		else
-			animation.addByPrefix(name, anim, 24, false);
+			this.anim.addByPrefix(name, anim, 24, false);
 	}
 }
