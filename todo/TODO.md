@@ -10,5 +10,3 @@
 - Refactor/Redo Scriptable Classes Support(?)
 
 - Fix iOS crash
-- Fix SustainStrip (Modcharting)
-- Fix Opponent Note Alpha (Modcharting)
