@@ -19,7 +19,6 @@ class Framerate extends Sprite
 	public static var textFormat:TextFormat;
 	public static var fpsCounter:FramerateCounter;
 	public static var memoryCounter:MemoryCounter;
-	public static var shadowBuildField:ShadowBuildField;
 
 	public static var fontName:String = #if windows '${Sys.getEnv("windir")}\\Fonts\\consola.ttf' #else "_typewriter" #end;
 
@@ -78,7 +77,6 @@ class Framerate extends Sprite
 
 		__addToList(fpsCounter = new FramerateCounter());
 		__addToList(memoryCounter = new MemoryCounter());
-		__addToList(shadowBuildField = new ShadowBuildField());
 		__addCategory(new SystemInfo());
 	}
 
@@ -86,7 +84,6 @@ class Framerate extends Sprite
 	{
 		for (c in categories)
 			c.reload();
-		shadowBuildField.reload();
 		memoryCounter.reload();
 		fpsCounter.reload();
 	}
@@ -158,8 +155,8 @@ class Framerate extends Sprite
 		x = #if mobile FlxG.game.x + #end 10 + offset.x;
 		y = #if mobile FlxG.game.y + #end 2 + offset.y;
 
-		var width = MathUtil.maxSmart(fpsCounter.width, memoryCounter.width, shadowBuildField.width) + (x * 2);
-		var height = shadowBuildField.y + shadowBuildField.height;
+		var width = MathUtil.maxSmart(fpsCounter.width, memoryCounter.width) + (x * 2);
+		var height = memoryCounter.y + memoryCounter.height;
 		bgSprite.x = -x;
 		bgSprite.y = offset.x;
 		bgSprite.scaleX = width;
@@ -167,7 +164,7 @@ class Framerate extends Sprite
 
 		var selectable = debugMode == 2; // idk i tried to make it more readable:sob:  - Nex
 		{
-			memoryCounter.memoryText.selectable = memoryCounter.memoryPeakText.selectable = fpsCounter.fpsNum.selectable = fpsCounter.fpsLabel.selectable = shadowBuildField.selectable = selectable;
+			memoryCounter.memoryText.selectable = memoryCounter.memoryPeakText.selectable = fpsCounter.fpsNum.selectable = fpsCounter.fpsLabel.selectable = selectable;
 		}
 
 		var y:Float = height + 4;

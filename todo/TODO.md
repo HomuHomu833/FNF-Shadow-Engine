@@ -1,9 +1,14 @@
-- Switch SScript to RuleScript(?) [in a nutshell screw SScript]
+- Switch SScript to RuleScript or hscript-improved(?) [in a nutshell screw SScript]
 - Add hxfmod
 - Add ShadowLua and Deprecate PsychLua (OOP Lua)
-- Add V-Slice Results Screen, Freeplay(?), Char Select(?) and Wide Screen Support
-- Add editor for Results Screen and Char Select(?)
+- Add V-Slice Results Screen(?), Freeplay(?), Char Select(?) and Wide Screen Support
+- Add editor for Results Screen(?) and Char Select(?)
 - Add Base Game Files
 - Add our UI for editors
 - Add multikey support(?)
 - Add Scritable Classes (eg Class that is empty so modders can do shit with it)
+- Refactor/Redo Scriptable Classes Support(?)
+
+- Fix iOS crash
+- Fix SustainStrip (Modcharting)
+- Fix Opponent Note Alpha (Modcharting)
