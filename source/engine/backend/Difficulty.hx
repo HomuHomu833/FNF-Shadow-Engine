@@ -75,7 +75,7 @@ class Difficulty
 		if (raw.toLowerCase() == "erect" || raw.toLowerCase() == "nightmare")
 			return dash + "Erect";
 
-		return null;
+		return includeDash ? "" : null;
 	}
 
 	inline public static function getDefault():String
