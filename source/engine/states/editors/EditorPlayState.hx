@@ -109,10 +109,7 @@ class EditorPlayState extends MusicBeatSubstate
 		grpNoteSplashes.add(splash);
 		splash.alpha = 0.000001; // cant make it invisible or it won't allow precaching
 
-		SustainSplash.startCrochet = Conductor.stepCrochet;
-		SustainSplash.frameRate = Math.floor(24 / 100 * PlayState.SONG.bpm);
-		var holdSplash:SustainSplash = new SustainSplash();
-		holdSplash.alpha = 0.0001;
+		SustainSplash.init(grpHoldSplashes, Conductor.stepCrochet, Math.floor(24 / 100 * PlayState.SONG.bpm));
 
 		opponentStrums = new FlxTypedGroup<StrumNote>();
 		playerStrums = new FlxTypedGroup<StrumNote>();
@@ -304,6 +301,9 @@ class EditorPlayState extends MusicBeatSubstate
 		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
 		FlxG.stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
 		FlxG.mouse.visible = true;
+
+		SustainSplash.close();
+
 		super.destroy();
 	}
 
@@ -806,6 +806,8 @@ class EditorPlayState extends MusicBeatSubstate
 			spr.playAnim('pressed');
 			spr.resetAnim = 0;
 		}
+
+		SustainSplash.showAtData(key);
 	}
 
 	private function onKeyRelease(event:KeyboardEvent):Void
@@ -826,6 +828,8 @@ class EditorPlayState extends MusicBeatSubstate
 			spr.playAnim('static');
 			spr.resetAnim = 0;
 		}
+
+		SustainSplash.hideAtData(key);
 	}
 
 	private function onButtonPress(button:TouchButton):Void
@@ -1025,54 +1029,15 @@ class EditorPlayState extends MusicBeatSubstate
 
 	public function spawnHoldSplashOnNote(note:Note)
 	{
-		if (!note.isSustainNote && note.tail.length != 0 && note.tail[note.tail.length - 1].extraData['holdSplash'] == null)
-		{
-			spawnHoldSplash(note);
-		}
-		else if (note.isSustainNote)
-		{
-			try
-			{
-				final end:Note = StringTools.endsWith(note.animation.curAnim.name, 'end') ? note : note.parent.tail[note.parent.tail.length - 1];
-				if (end != null)
-				{
-					var leSplash:SustainSplash = end.extraData['holdSplash'];
-					if (leSplash == null && !end.parent.wasGoodHit)
-					{
-						spawnHoldSplash(note);
-					}
-					else if (!leSplash?.visible)
-					{
-						leSplash.visible = true;
-						// leSplash.alpha = note.alpha;
-					}
-				}
-			}
-			catch (e:Dynamic)
-			{
-				//trace('Failed to spawn Hold splash! $e');
-			}
-		}
-	}
+		if (note == null)
+			return;
 
-	public function spawnHoldSplash(note:Note)
-	{
-		var end:Note = note.isSustainNote ? note.parent.tail[note.parent.tail.length - 1] : note.tail[note.tail.length - 1];
-		var splash:SustainSplash = null;
-		try
+		if (note.tail.length > 0 && !note.isSustainNote)
 		{
-			splash = grpHoldSplashes.recycle(SustainSplash);
-			if (splash == null)
-				splash = new SustainSplash();
+			var lastSustain:Note = note.tail[note.tail.length - 1];
+			var strumNote:StrumNote = note.mustPress ? playerStrums.members[note.noteData] : opponentStrums.members[note.noteData];
+			SustainSplash.generateSustainSplash(strumNote, lastSustain.strumTime, note.mustPress);
 		}
-		catch (e:Dynamic)
-		{
-			//trace('failed to recycle splash! $e');
-			splash = new SustainSplash();
-		}
-		splash.setupSusSplash(strumLineNotes.members[end.noteData + (end.mustPress ? 4 : 0)], end, playbackRate);
-		grpHoldSplashes.add(splash);
-		splash.parentGroup = grpHoldSplashes;
 	}
 
 	function spawnNoteSplashOnNote(note:Note)

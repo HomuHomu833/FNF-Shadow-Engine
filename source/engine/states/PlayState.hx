@@ -57,7 +57,7 @@ import modcharting.PlayfieldRenderer;
 **/
 class PlayState extends MusicBeatState
 {
-	public static var STRUM_X = 48.5;
+	public static var STRUM_X = 48;
 	public static var STRUM_X_MIDDLESCROLL = -278;
 
 	public static var ratingStuff:Array<Dynamic> = [
@@ -516,10 +516,7 @@ class PlayState extends MusicBeatState
 		var splash:NoteSplash = new NoteSplash(100, 100);
 		grpNoteSplashes.add(splash);
 
-		SustainSplash.startCrochet = Conductor.stepCrochet;
-		SustainSplash.frameRate = Math.floor(24 / 100 * PlayState.SONG.bpm);
-		var holdSplash:SustainSplash = new SustainSplash();
-		holdSplash.alpha = 0.0001;
+		SustainSplash.init(grpHoldSplashes, Conductor.stepCrochet, Math.floor(24 / 100 * PlayState.SONG.bpm));
 
 		opponentStrums = new FlxTypedGroup<StrumNote>();
 		playerStrums = new FlxTypedGroup<StrumNote>();
@@ -3107,6 +3104,9 @@ class PlayState extends MusicBeatState
 			spr.playAnim('pressed');
 			spr.resetAnim = 0;
 		}
+
+		SustainSplash.showAtData(key);
+
 		FunkinLua.getCurrentMusicState().callOnScripts('onKeyPress', [key]);
 	}
 
@@ -3143,6 +3143,9 @@ class PlayState extends MusicBeatState
 			spr.playAnim('static');
 			spr.resetAnim = 0;
 		}
+
+		SustainSplash.hideAtData(key);
+
 		FunkinLua.getCurrentMusicState().callOnScripts('onKeyRelease', [key]);
 	}
 
@@ -3448,7 +3451,6 @@ class PlayState extends MusicBeatState
 		strumPlayAnim(true, Std.int(Math.abs(note.noteData)), Conductor.stepCrochet * 1.25 / 1000 / playbackRate);
 		note.hitByOpponent = true;
 
-		spawnHoldSplashOnNote(note);
 
 		final args2:Array<Dynamic> = [
 			notes.members.indexOf(note),
@@ -3552,7 +3554,7 @@ class PlayState extends MusicBeatState
 			opponentVocals.volume = 1;
 		else
 			vocals.volume = 1;
-		spawnHoldSplashOnNote(note);
+
 		var noteDiff:Float = Math.abs(note.strumTime - Conductor.songPosition + ClientPrefs.data.ratingOffset);
 		var array = [note.strumTime, note.sustainLength, note.noteData, noteDiff];
 		if (note.isSustainNote)
@@ -3600,56 +3602,15 @@ class PlayState extends MusicBeatState
 
 	public function spawnHoldSplashOnNote(note:Note)
 	{
-		if (!note.isSustainNote && note.tail.length != 0 && note.tail[note.tail.length - 1].extraData['holdSplash'] == null)
-		{
-			spawnHoldSplash(note);
-		}
-		else if (note.isSustainNote)
-		{
-			try
-			{
-				final end:Note = StringTools.endsWith(note.animation.curAnim.name, 'end') ? note : note.parent.tail[note.parent.tail.length - 1];
-				if (end != null)
-				{
-					var leSplash:SustainSplash = end.extraData['holdSplash'];
-					if (leSplash == null && !end.parent.wasGoodHit)
-					{
-						spawnHoldSplash(note);
-					}
-					else if (!leSplash?.visible)
-					{
-						leSplash.visible = true;
-						// leSplash.alpha = note.alpha;
-					}
-				}
-			}
-			catch (e:Dynamic)
-			{
-				// trace('Failed to spawn Hold splash! $e');
-			}
-		}
-	}
+		if (note == null)
+			return;
 
-	public function spawnHoldSplash(note:Note)
-	{
-		final end:Note = note.isSustainNote ? note.parent.tail[note.parent.tail.length - 1] : note.tail[note.tail.length - 1];
-		var splash:SustainSplash = null;
-		try
+		if (note.tail.length > 0 && !note.isSustainNote)
 		{
-			splash = grpHoldSplashes.recycle(SustainSplash);
-			if (splash == null)
-				splash = new SustainSplash();
+			var lastSustain:Note = note.tail[note.tail.length - 1];
+			var strumNote:StrumNote = note.mustPress ? playerStrums.members[note.noteData] : opponentStrums.members[note.noteData];
+			SustainSplash.generateSustainSplash(strumNote, lastSustain.strumTime, note.mustPress);
 		}
-		catch (e:Dynamic)
-		{
-			// trace('failed to recycle splash! $e');
-			splash = new SustainSplash();
-		}
-		splash.setupSusSplash(strumLineNotes.members[
-			end.noteData + (characterPlayingAsDad ? end.mustPress ? 0 : 4 : end.mustPress ? 4 : 0)
-		], end, playbackRate);
-		grpHoldSplashes.add(splash);
-		splash.parentGroup = grpHoldSplashes;
 	}
 
 	public function spawnNoteSplashOnNote(note:Note)
@@ -3671,6 +3632,30 @@ class PlayState extends MusicBeatState
 
 	override function destroy()
 	{
+		instance = null;
+
+		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
+		FlxG.stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
+
+		FlxG.animationTimeScale = 1;
+
+		Note.globalRgbShaders = [];
+		SustainSplash.close();
+		backend.NoteTypesConfig.clearNoteTypesData();
+		
+		@:privateAccess
+		FlxG.game._filters = [];
+		camGame.filters = camHUD.filters = camOther.filters = [];
+
+		#if (target.threaded)
+		shutdownThread = true;
+		FlxG.signals.preUpdate.remove(checkForResync);
+		#end
+
+		#if FLX_PITCH
+		FlxG.sound.music.pitch = 1;
+		#end
+
 		#if VIDEOS_ALLOWED
 		if(videoCutscene != null)
 		{
@@ -3678,20 +3663,7 @@ class PlayState extends MusicBeatState
 			videoCutscene = null;
 		}
 		#end
-		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
-		FlxG.stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
-		FlxG.animationTimeScale = 1;
-		#if FLX_PITCH FlxG.sound.music.pitch = 1; #end
-		Note.globalRgbShaders = [];
-		backend.NoteTypesConfig.clearNoteTypesData();
-		instance = null;
-		@:privateAccess
-		FlxG.game._filters = [];
-		camGame.filters = camHUD.filters = camOther.filters = [];
-		#if (target.threaded)
-		shutdownThread = true;
-		FlxG.signals.preUpdate.remove(checkForResync);
-		#end
+
 		super.destroy();
 	}
 

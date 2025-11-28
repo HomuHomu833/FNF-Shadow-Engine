@@ -1,124 +1,200 @@
 package objects;
 
+import shaders.RGBPalette;
+import shaders.RGBPalette.RGBShaderReference;
+
 class SustainSplash extends FlxSprite
 {
+	public static var DEFAULT_TEXTURE:String = 'holdCover';
+	
 	public static var startCrochet:Float;
 	public static var frameRate:Int;
+	public static var mainGroup:FlxTypedGroup<SustainSplash>;
 
-	public var strumNote:StrumNote;
-	public var parentGroup:FlxTypedGroup<SustainSplash>;
+	public var texture(default, set):String = null;
+	public var strumNote(default, set):StrumNote;
+	public var noteData(default, null):Int;
+	public var targetStrumTime(default, null):Float;
+	public var mustPress(default, null):Bool = true;
+	public var useRGBShader:Bool = true;
+	
+	private var reachedEnd:Bool = false;
+	private var rgbShader:RGBShaderReference;
+	private var rgbShaders:Array<RGBShaderReference> = [];
 
-	public var destroyTimer:FlxTimer;
+	public static function init(group:FlxTypedGroup<SustainSplash>, startCrochet:Float, frameRate:Int):Void
+	{
+		SustainSplash.startCrochet = startCrochet;
+		SustainSplash.frameRate = frameRate;
+		SustainSplash.mainGroup = group;
+
+		for (img in ['holdCover', 'holdCoverPurple', 'holdCoverBlue', 'holdCoverGreen', 'holdCoverRed'])
+			Paths.getSparrowAtlas(img);
+	}
+
+	public static function generateSustainSplash(strumNote:StrumNote, targetStrumTime:Float, mustPress:Bool = true):SustainSplash
+	{
+		var splash:SustainSplash = SustainSplash.mainGroup.recycle(null, () -> new SustainSplash(), false, true);
+		splash.resetSustainSplash(strumNote, targetStrumTime, mustPress);
+
+		return splash;
+	}
+
+	public static function hideAtData(noteData:Int):Void
+	{
+		for (splash in SustainSplash.mainGroup.members)
+		{
+			if (splash.exists && splash.alive && splash.noteData == noteData) splash.visible = false;
+		}
+	}
+
+	public static function showAtData(noteData:Int):Void
+	{
+		for (splash in SustainSplash.mainGroup.members)
+		{
+			if (splash.exists && splash.alive && splash.noteData == noteData) splash.visible = true;
+		}
+	}
+
+	public static function close():Void
+	{
+		SustainSplash.startCrochet = 0;
+		SustainSplash.frameRate = 0;
+		SustainSplash.mainGroup.destroy();
+	}
 
 	public function new():Void
 	{
 		super();
+	}
 
-		frames = Paths.getSparrowAtlas('holdSplash');
-		animation.addByPrefix('hold', 'holdSplash0', 24, true);
-		animation.addByPrefix('end', 'holdSplashEnd0', 24, false);
-		animation.play('hold', true, false, 0);
-		animation.curAnim.frameRate = frameRate;
-		animation.curAnim.looped = true;
+	public function resetSustainSplash(strumNote:StrumNote, targetStrumTime:Float, mustPress:Bool = true):Void
+	{
+		@:privateAccess
+		this.noteData = strumNote.noteData;
+		this.strumNote = strumNote;
+		this.targetStrumTime = targetStrumTime;
+		this.reachedEnd = false;
+		this.mustPress = mustPress;
+		
+		initRGBShader();
 
-		destroyTimer = new FlxTimer();
+		if (this.rgbShader != null)
+			this.rgbShader.enabled = useRGBShader;
+
+		reloadSustainSplash(texture);
+	}
+
+	public function reloadSustainSplash(texture:String):Void
+	{
+		if (texture == null)
+			texture = DEFAULT_TEXTURE;
+
+		var postfix:String = switch (noteData)
+		{
+			case 0: "Purple";
+			case 1: "Blue";
+			case 2: "Green";
+			case 3: "Red";
+			default: "";
+		}
+
+		frames = Paths.getSparrowAtlas('$texture${useRGBShader ? '' : postfix}');
+		animation.finishCallback = (name:String) ->
+		{
+			switch (name)
+			{
+				case 'start':
+					animation.play('hold', true);
+				case 'end':
+					kill();
+			}
+		};
+		animation.addByPrefix('start', 'holdCoverStart0', 24, false);
+		animation.addByPrefix('hold', 'holdCover0', SustainSplash.frameRate, true);
+		animation.addByPrefix('end', 'holdCoverEnd0', 24, false);
+		animation.play('start', true, false, 0);
+
+		antialiasing = ClientPrefs.data.antialiasing;
+		offset.set(PlayState.isPixelStage ? 112.5 : 106.25, 100);
+	}
+
+	private function initRGBShader():Void
+	{
+		if (strumNote != null)
+		{
+			if (PlayState.SONG != null && PlayState.SONG.disableNoteRGB)
+				useRGBShader = false;
+
+			if (rgbShaders[noteData] == null)
+			{
+				var rgbShader = new RGBShaderReference(this, Note.initializeGlobalRGBShader(noteData));
+				rgbShader.enabled = false;
+				rgbShaders[noteData] = rgbShader;
+			}
+			
+			if (rgbShader != null) rgbShader.enabled = false;
+
+			rgbShader = rgbShaders[noteData];
+		}
 	}
 
 	override function update(elapsed:Float)
 	{
 		if (strumNote != null)
-			this.alpha = strumNote.alpha * ClientPrefs.data.splashAlpha;
-		if (this.x != strumNote.x || this.y != strumNote.y)
+		{
+			alpha = strumNote.alpha * ClientPrefs.data.splashAlpha;
 			setPosition(strumNote.x, strumNote.y);
-		/*if (this.angle != strumNote.angle)
-			angle = strumNote.angle;*/
+
+			if (angle != strumNote.angle)
+				angle = strumNote.angle;
+		}
+
+		if (Conductor.songPosition >= targetStrumTime && !reachedEnd)
+		{
+			reachedEnd = true;
+			if (mustPress)
+			{
+				animation.play('end', true);
+			}
+			else
+			{
+				kill();
+			}
+		}
+
 		super.update(elapsed);
 	}
 
-	public function setupSusSplash(strum:StrumNote, end:Note, ?playbackRate:Float = 1):Void
-	{
-		final lengthToGet:Int = !end.isSustainNote ? end.tail.length : end.parent.tail.length;
-		final timeToGet:Float = !end.isSustainNote ? end.strumTime : end.parent.strumTime;
-		final timeThingy:Float = (startCrochet * lengthToGet + (timeToGet - Conductor.songPosition + ClientPrefs.data.ratingOffset)) / playbackRate * .001;
-
-		end.extraData['holdSplash'] = this;
-
-		clipRect = new flixel.math.FlxRect(0, !PlayState.isPixelStage ? 0 : -210, frameWidth, frameHeight);
-
-		if (end.shader != null && !PlayState.SONG.disableNoteRGB)
-		{
-			shader = new objects.NoteSplash.PixelSplashShaderRef().shader;
-			shader.data.r.value = end.shader.data.r.value;
-			shader.data.g.value = end.shader.data.g.value;
-			shader.data.b.value = end.shader.data.b.value;
-			shader.data.mult.value = end.shader.data.mult.value;
-		}
-
-		setPosition(strum.x, strum.y);
-		offset.set(PlayState.isPixelStage ? 112.5 : 106.25, 100);
-
-		strumNote = strum;
-		alpha = ClientPrefs.data.splashAlpha - (1 - strumNote.alpha);
-
-		destroyTimer.start(timeThingy, (idk:FlxTimer) ->
-		{
-			if (!end.mustPress) // for opponent notes
-			{
-				die(end);
-				return;
-			}
-
-			alpha = ClientPrefs.data.splashAlpha - (1 - strumNote.alpha);
-
-			clipRect = null;
-
-			final badNotes:Array<String> = ['Hurt Note'];
-			try
-			{
-				if (ClientPrefs.data.splashAlpha != 0
-					&& !badNotes.contains(end.noteType)
-					|| (end.animation.exists(Note.colArray[end.prevNote.noteData % Note.colArray.length] + 'hold')
-						|| end.animation.exists(Note.colArray[end.noteData % Note.colArray.length] + 'holdend')))
-				{
-					// alpha = ClientPrefs.data.splashAlpha - (1 - strumNote.alpha);
-					animation.play('end', true, false, 0);
-					animation.curAnim.looped = false;
-					animation.curAnim.frameRate = 24;
-					animation.finishCallback = (idkEither:Dynamic) ->
-					{
-						die(end);
-					}
-				}
-			}
-			catch (e:Dynamic)
-			{
-				trace('Failed to play end animation! $e');
-			}
-		});
-	}
-
-	override function kill():Void
+	override public function kill():Void
 	{
 		super.kill();
-		this.visible = false;
+
+		if (rgbShader != null)
+			rgbShader.enabled = false;
+		targetStrumTime = 0;
+		strumNote = null;
 	}
 
-	/*override function revive():Void
+	@:noCompletion
+	private function set_texture(value:String):String
 	{
-		super.revive();
-		this.visible = true;
-	}*/
+		reloadSustainSplash(value);
+		return texture = value;
+	}
 
-	public function die(?end:Note = null):Void
+	@:noCompletion
+	private function set_strumNote(value:StrumNote):StrumNote
 	{
-		kill();
-
-		if (parentGroup != null)
-			parentGroup.remove(this);
-
-		if (end != null)
+		if (strumNote != null)
 		{
-			end.extraData['holdSplash'] = null;
+			alpha = strumNote.alpha * ClientPrefs.data.splashAlpha;
+			setPosition(strumNote.x, strumNote.y);
+
+			if (angle != strumNote.angle)
+				angle = strumNote.angle;
 		}
+
+		return strumNote = value;
 	}
 }
