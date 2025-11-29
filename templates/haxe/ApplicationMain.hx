@@ -47,10 +47,12 @@ class ApplicationMain
         app.meta.set("packageName", "::meta.packageName::");
         app.meta.set("version", "::meta.version::");
 
-        ::if (config.hxtelemetry != null)::#if hxtelemetry
+		#if hxtelemetry
+        ::if (config.hxtelemetry != null)::
         app.meta.set("hxtelemetry-allocations", "::config.hxtelemetry.allocations::");
         app.meta.set("hxtelemetry-host", "::config.hxtelemetry.host::");
-        #end::end::
+		::end::
+		#end
 
         #if (linux || mac)
         app.onCreateWindow.add(function(window:lime.ui.Window):Void
