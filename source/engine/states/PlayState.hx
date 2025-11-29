@@ -3623,6 +3623,12 @@ class PlayState extends MusicBeatState
 			var strumNote:StrumNote = note.mustPress ? playerStrums.members[note.noteData] : opponentStrums.members[note.noteData];
 			SustainSplash.generateSustainSplash(strumNote, lastSustain.strumTime, note.mustPress);
 		}
+		else if(note.isSustainNote && note.parent != null && note.parent.tail.length > 0 && !SustainSplash.hasSplashAtData(note.noteData, note.mustPress))
+		{
+			var lastSustain:Note = note.parent.tail[note.parent.tail.length - 1];
+			var strumNote:StrumNote = note.mustPress ? playerStrums.members[note.noteData] : opponentStrums.members[note.noteData];
+			SustainSplash.generateSustainSplash(strumNote, lastSustain.strumTime, note.mustPress);
+		}
 	}
 
 	public function spawnNoteSplashOnNote(note:Note)
