@@ -47,7 +47,7 @@ class SustainSplash extends FlxSprite
 	{
 		for (splash in SustainSplash.mainGroup.members)
 		{
-			if (splash.exists && splash.alive && splash.noteData == noteData && splash.mustPress)
+			if (splashIsValid(splash, noteData) && splash.mustPress && splash.animation.curAnim.name != 'end' && (Math.abs(Conductor.songPosition - splash.targetStrumTime) > 30))
 				splash.visible = false;
 		}
 	}
@@ -56,7 +56,7 @@ class SustainSplash extends FlxSprite
 	{
 		for (splash in SustainSplash.mainGroup.members)
 		{
-			if (splash.exists && splash.alive && splash.noteData == noteData && splash.mustPress)
+			if (splashIsValid(splash, noteData) && splash.mustPress)
 				splash.visible = true;
 		}
 	}
@@ -65,10 +65,15 @@ class SustainSplash extends FlxSprite
 	{
 		for (splash in SustainSplash.mainGroup.members)
 		{
-			if (splash.exists && splash.alive && splash.noteData == noteData && splash.mustPress == mustPess) return true;
+			if (splashIsValid(splash, noteData) && splash.mustPress == mustPess) return true;
 		}
 
 		return false;
+	}
+	
+	public static function splashIsValid(splash:SustainSplash, ?noteData:Null<Int>)
+	{
+		return splash != null && splash.exists && splash.alive && (noteData == null || splash.noteData == noteData);
 	}
 
 	public static function close():Void
@@ -216,6 +221,16 @@ class SustainSplash extends FlxSprite
 		super.update(elapsed);
 	}
 
+	override public function draw():Void {
+		if (strumNote == null)
+			return;
+
+		if ((x != strumNote.x || y != strumNote.y) && visible && active && alive && exists)
+			update(FlxG.elapsed);
+
+		super.draw();
+	}
+
 	override public function kill():Void
 	{
 		super.kill();
@@ -227,6 +242,7 @@ class SustainSplash extends FlxSprite
 		noteData = -1;
 		targetStrumTime = 0;
 		strumNote = null;
+		visible = false;
 	}
 
 	override public function destroy():Void {
