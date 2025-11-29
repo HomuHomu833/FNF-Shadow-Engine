@@ -140,11 +140,13 @@ class ApplicationMain
         var preloader = getPreloader();
         app.preloader.onProgress.add(function(loaded, total)
         {
-            @:privateAccess preloader.update(loaded, total);
+            @:privateAccess
+			preloader.update(loaded, total);
         });
         app.preloader.onComplete.add(function()
         {
-            @:privateAccess preloader.start();
+            @:privateAccess
+			preloader.start();
         });
 
         preloader.onComplete.add(start.bind((cast app.window:openfl.display.Window).stage));
