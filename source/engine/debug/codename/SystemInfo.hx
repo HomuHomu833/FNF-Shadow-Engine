@@ -51,7 +51,7 @@ class SystemInfo extends FramerateCategory
 			var osVersion = "";
 			for (line in process.stdout.readAll().toString().split("\n"))
 			{
-				if (line.startsWith("PRETTY_NAME="))
+				if (line.startsWith("NAME="))
 				{
 					var index = line.indexOf('"');
 					if (index != -1)
