@@ -3120,8 +3120,6 @@ class PlayState extends MusicBeatState
 			spr.resetAnim = 0;
 		}
 
-		SustainSplash.showAtData(key);
-
 		FunkinLua.getCurrentMusicState().callOnScripts('onKeyPress', [key]);
 	}
 
@@ -3158,8 +3156,6 @@ class PlayState extends MusicBeatState
 			spr.playAnim('static');
 			spr.resetAnim = 0;
 		}
-
-		SustainSplash.hideAtData(key);
 
 		FunkinLua.getCurrentMusicState().callOnScripts('onKeyRelease', [key]);
 	}
@@ -3261,6 +3257,12 @@ class PlayState extends MusicBeatState
 
 			if (!holdArray.contains(true) || endingSong)
 				playerDance();
+
+			for (i => hold in holdArray)
+				if (hold)
+					SustainSplash.showAtData(i);
+				else
+					SustainSplash.hideAtData(i);
 		}
 
 		// TO DO: Find a better way to handle controller inputs, this should work for now

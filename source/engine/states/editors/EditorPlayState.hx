@@ -806,8 +806,6 @@ class EditorPlayState extends MusicBeatSubstate
 			spr.playAnim('pressed');
 			spr.resetAnim = 0;
 		}
-
-		SustainSplash.showAtData(key);
 	}
 
 	private function onKeyRelease(event:KeyboardEvent):Void
@@ -828,8 +826,6 @@ class EditorPlayState extends MusicBeatSubstate
 			spr.playAnim('static');
 			spr.resetAnim = 0;
 		}
-
-		SustainSplash.hideAtData(key);
 	}
 
 	private function onButtonPress(button:TouchButton):Void
@@ -894,6 +890,12 @@ class EditorPlayState extends MusicBeatSubstate
 				}
 			}
 		}
+
+		for (i => hold in holdArray)
+			if (hold)
+				SustainSplash.showAtData(i);
+			else
+				SustainSplash.hideAtData(i);
 
 		// TO DO: Find a better way to handle controller inputs, this should work for now
 		if (controls.controllerMode && releaseArray.contains(true))
