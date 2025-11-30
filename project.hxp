@@ -342,9 +342,7 @@ class Project extends HXProject
 	}
 
 	function includeHaxelib(name:String, version:String = ""):Void
-	{
 		haxelibs.push(new Haxelib(name, version));
-	}
 
 	function addAsset(path:String, ?rename:String, embed:Bool = false):Void
 	{
@@ -375,9 +373,7 @@ class Project extends HXProject
 	}
 
 	function includeAssetLibrary(name:String, embed:Bool = false, preload:Bool = false):Void
-	{
-		this.libraries.push(new Library('', name, null, embed, preload, false, ""));
-	}
+		libraries.push(new Library('', name, null, embed, preload, false, ""));
 
 	function generateAsciiArt(imagePath:String, targetWidth:Int, maxHeight:Int = 20):String
 	{
@@ -519,16 +515,12 @@ class CompileFlag
 	public static var project:Project;
 
 	public static function get(name:String):CompileFlag
-	{
 		return new CompileFlag(name);
-	}
 
 	var name:String;
 
 	public function new(name:String)
-	{
 		this.name = name;
-	}
 
 	public function enable(stopPropagation:Bool = false):Void
 	{
@@ -559,14 +551,10 @@ class CompileFlag
 	}
 
 	public function isEnabled():Bool
-	{
 		return project.haxedefs.exists(name) || project.defines.exists(name);
-	}
 
 	public function isDisabled():Bool
-	{
 		return getInverse().isEnabled() || !isEnabled();
-	}
 
 	function getInverse():CompileFlag
 	{
