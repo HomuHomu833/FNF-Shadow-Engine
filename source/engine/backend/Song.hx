@@ -58,14 +58,14 @@ class Song
 		if (songJson.format == null)
 			songJson.format = 'psych_legacy';
 
-		if (songJson.gfVersion == null)
+		if (songJson.gfVersion == null && songJson.player3 != null)
 		{
 			songJson.gfVersion = songJson.player3;
 			songJson.player3 = null;
 		}
 
 		// backwards compability
-		if (songJson.arrowSkin != null)
+		if (songJson.arrowSkin != null && (songJson.playerArrowSkin == null || songJson.opponentArrowSkin == null))
 		{
 			songJson.playerArrowSkin = songJson.opponentArrowSkin = songJson.arrowSkin;
 			songJson.arrowSkin == null;
