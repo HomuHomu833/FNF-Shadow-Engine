@@ -105,10 +105,12 @@ class Project extends HXProject
 		}
 
 		var unicode = #if (target.unicode) true #else false #end;
-		var targetPlatform = isWeb() ? "Web (HTML5)" : (isIOS() ? "iOS" : (isAndroid() ? "Android" : (isWindows() ? "Windows" : (isMac() ? "Mac" : (isLinux() ? "Linux" : "Unknown")))));
+		var targetPlatform = isWeb() ? "Web (HTML5)" : isIOS() ? "iOS" : isAndroid() ? "Android" : isWindows() ? "Windows" : isMac() ? "Mac" : isLinux() ? "Linux" : "Unknown";
 
 		if (isHashLink())
 			targetPlatform = "Hashlink (" + targetPlatform + ")";
+		else if (isIOSSimulator())
+			targetPlatform = "Simulator (" + targetPlatform + ")";
 
 		trace('');
 		if (ENABLE_ASCII_ART)
@@ -193,7 +195,7 @@ class Project extends HXProject
 		MODS_ALLOWED.integrate(isDesktop() || isMobile());
 		HSCRIPT_ALLOWED.integrate(true);
 		LUA_ALLOWED.integrate((isDesktop() && !isHashLink()) || isMobile());
-		VIDEOS_ALLOWED.integrate((isDesktop() && !isHashLink()) || isMobile());
+		VIDEOS_ALLOWED.integrate((isDesktop() && !isHashLink()) || (isMobile() && !isIOSSimulator()));
 		DISCORD_ALLOWED.integrate((isDesktop() && !isHashLink()));
 		MODCHARTS_ALLOWED.integrate(DCEBUILD.isDisabled());
 		DCEBUILD.integrate(false);
@@ -482,6 +484,9 @@ class Project extends HXProject
 
 	inline function isIOS():Bool
 		return target == Platform.IOS;
+	
+	inline function isIOSSimulator():Bool
+		return target == Platform.IOS && targetFlags.exists("simulator");
 
 	inline function isHashLink():Bool
 		return targetFlags.exists("hl");
