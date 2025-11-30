@@ -197,7 +197,7 @@ class Project extends HXProject
 		LUA_ALLOWED.integrate((isDesktop() && !isHashLink()) || isMobile());
 		VIDEOS_ALLOWED.integrate((isDesktop() && !isHashLink()) || (isMobile() && !isIOSSimulator()));
 		DISCORD_ALLOWED.integrate((isDesktop() && !isHashLink()));
-		MODCHARTS_ALLOWED.integrate(DCEBUILD.isDisabled());
+		MODCHARTS_ALLOWED.integrate(/*DCEBUILD.isDisabled()*/false);
 		DCEBUILD.integrate(false);
 
 		setHaxedef("FLX_NO_FOCUS_LOST_SCREEN");
