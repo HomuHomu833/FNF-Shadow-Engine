@@ -1,6 +1,6 @@
 package debug.codename;
 
-import debug.codename.backend.MathUtil;
+import backend.codename.MathUtil;
 import flixel.math.FlxPoint;
 import openfl.display.Bitmap;
 import openfl.display.BitmapData;

@@ -244,7 +244,7 @@ class SustainSplash extends FlxSprite
 	@:noCompletion
 	private static function set_texture(value:String):String
 	{
-		@:bypassAccessor
+		//@:bypassAccessor
 		texture = value;
 
 		for (splash in SustainSplash.mainGroup.members)

@@ -1,7 +1,7 @@
 package debug.codename;
 
-import debug.codename.backend.MemoryUtil;
-import debug.codename.backend.RegisteryUtil;
+import backend.codename.MemoryUtil;
+import backend.codename.RegisteryUtil;
 import lime.utils.Log;
 #if android
 import android.os.Build;
