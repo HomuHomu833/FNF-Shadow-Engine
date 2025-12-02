@@ -12,6 +12,7 @@ import sys.thread.Mutex;
 class OptionsState extends MusicBeatState
 {
 	var options:Array<String> = [
+		'Note Colors',
 		'Controls',
 		'Adjust Delay and Combo',
 		'Graphics',
@@ -35,6 +36,8 @@ class OptionsState extends MusicBeatState
 			removeTouchPad();
 		switch (label)
 		{
+			case 'Note Colors':
+				openSubState(new options.NotesSubState());
 			case 'Controls':
 				openSubState(new options.ControlsSubState());
 			case 'Graphics':
