@@ -24,7 +24,7 @@ class LogoImage extends BitmapData
 }
 
 #if TOUCH_HERE_TO_PLAY
-@:bitmap('assets/preloader/touchHereToPlay.png')
+@:bitmap('assets/embed/images/preloader/touchHereToPlay.png')
 class TouchHereToPlayImage extends BitmapData
 {
 }

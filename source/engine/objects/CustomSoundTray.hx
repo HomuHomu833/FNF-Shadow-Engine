@@ -21,7 +21,7 @@ class CustomSoundTray extends FlxSoundTray
 		super();
 		removeChildren();
 
-		var bg:Bitmap = new Bitmap(Assets.getBitmapData('assets/embed/soundtray/images/volumebox.png'));
+		var bg:Bitmap = new Bitmap(Assets.getBitmapData('assets/embed/images/soundtray/volumebox.png'));
 		bg.scaleX = graphicScale;
 		bg.scaleY = graphicScale;
 		bg.smoothing = true;
@@ -30,7 +30,7 @@ class CustomSoundTray extends FlxSoundTray
 		y = -height;
 		visible = false;
 
-		var backingBar:Bitmap = new Bitmap(Assets.getBitmapData('assets/embed/soundtray/images/bars_10.png'));
+		var backingBar:Bitmap = new Bitmap(Assets.getBitmapData('assets/embed/images/soundtray/bars_10.png'));
 		backingBar.x = 9;
 		backingBar.y = 5;
 		backingBar.scaleX = graphicScale;
@@ -43,7 +43,7 @@ class CustomSoundTray extends FlxSoundTray
 
 		for (i in 1...11)
 		{
-			var bar:Bitmap = new Bitmap(Assets.getBitmapData('assets/embed/soundtray/images/bars_$i.png'));
+			var bar:Bitmap = new Bitmap(Assets.getBitmapData('assets/embed/images/soundtray/bars_$i.png'));
 			bar.x = 9;
 			bar.y = 5;
 			bar.scaleX = graphicScale;
@@ -56,9 +56,9 @@ class CustomSoundTray extends FlxSoundTray
 		y = -height;
 		screenCenter();
 
-		volumeUpSound = 'assets/embed/soundtray/sounds/Volup.ogg';
-		volumeDownSound = 'assets/embed/soundtray/sounds/Voldown.ogg';
-		volumeMaxSound = 'assets/embed/soundtray/sounds/VolMAX.ogg';
+		volumeUpSound = 'assets/embed/sounds/soundtray/Volup.ogg';
+		volumeDownSound = 'assets/embed/sounds/soundtray/Voldown.ogg';
+		volumeMaxSound = 'assets/embed/sounds/soundtray/VolMAX.ogg';
 
 		_lastVolume = Math.round(MathTools.logToLinear(FlxG.sound.volume) * 10);
 	}
