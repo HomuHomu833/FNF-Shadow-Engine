@@ -41,6 +41,8 @@ class SystemInfo extends FramerateCategory
 
 	public static function init()
 	{
+		Log.throwErrors = false;
+
 		#if linux
 		var process = new Process("cat", ["/etc/os-release"]);
 		if (process.exitCode() != 0)
@@ -180,6 +182,8 @@ class SystemInfo extends FramerateCategory
 		{
 			Log.error('Unable to grab RAM Type: $e');
 		}
+
+		Log.throwErrors = true;
 
 		totalSwapMem = getSizeString(MemoryUtil.getTotalSwapMem());
 		formatSysInfo();
