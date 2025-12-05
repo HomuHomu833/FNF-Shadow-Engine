@@ -9,5 +9,3 @@
 - Add Scritable Classes (eg Class that is empty so modders can do shit with it)
 - Rewrite the Input System
 - Refactor/Redo Scriptable Classes Support(?)
-- Refactor the game (ApplicationMain) to be a library(?)
-- Fix iOS crash
