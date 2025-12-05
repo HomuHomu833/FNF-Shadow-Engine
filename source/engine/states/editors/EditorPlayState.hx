@@ -109,7 +109,7 @@ class EditorPlayState extends MusicBeatSubstate
 		grpNoteSplashes.add(splash);
 		splash.alpha = 0.000001; // cant make it invisible or it won't allow precaching
 
-		SustainSplash.init(grpHoldSplashes, Conductor.stepCrochet, Math.floor(24 / 100 * PlayState.SONG.bpm));
+		SustainSplash.init(grpHoldSplashes, Conductor.stepCrochet * 1.25 / 1000 / playbackRate, Math.floor(24 / 100 * PlayState.SONG.bpm));
 
 		opponentStrums = new FlxTypedGroup<StrumNote>();
 		playerStrums = new FlxTypedGroup<StrumNote>();

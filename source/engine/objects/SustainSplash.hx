@@ -267,11 +267,12 @@ class SustainSplash extends FlxSprite
 		{
 			alpha = strumNote.alpha * ClientPrefs.data.splashAlpha;
 			setPosition(strumNote.x, strumNote.y);
-
-			if (angle != strumNote.angle)
-				angle = strumNote.angle;
 		}
 
 		return strumNote = value;
 	}
+
+	@:noCompletion
+    override function set_angle(value:Float):Float
+        return value;
 }
