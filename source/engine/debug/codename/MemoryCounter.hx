@@ -41,7 +41,7 @@ class MemoryCounter extends Sprite
 			return;
 		super.__enterFrame(t);
 
-		final mem = external.memory.Memory.getCurrentUsage();
+		final mem = backend.codename.MemoryUtil.getCurrentMemUsage();
 
 		if (mem == memory)
 		{
