@@ -117,7 +117,7 @@ class SystemInfo extends FramerateCategory
 		{
 			#if windows
 			cpuName = RegistryUtil.get(HKEY_LOCAL_MACHINE, "HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0", "ProcessorNameString");
-			#elseif (mac || ios)
+			#elseif mac
 			var process = new Process("sysctl -a | grep brand_string"); // Somehow this isn't able to use the args but it still works
 			if (process.exitCode() != 0)
 				throw 'Could not fetch CPU information';
@@ -138,6 +138,8 @@ class SystemInfo extends FramerateCategory
 			}
 			#elseif android
 			cpuName = (VERSION.SDK_INT >= VERSION_CODES.S) ? Build.SOC_MODEL : Build.HARDWARE;
+			#elseif ios
+			cpuName = "Apple SoC";
 			#end
 		}
 		catch (e)
