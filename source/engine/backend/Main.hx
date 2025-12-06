@@ -104,7 +104,7 @@ class Main extends Sprite
 			game.zoom = 1.0;
 
 		#if VIDEOS_ALLOWED
-		hxvlc.util.Handle.init(#if (hxvlc >= "1.8.0") ['--no-lua'] #end);
+		hxvlc.util.Handle.init();
 		#end
 
 		Controls.instance = new Controls();

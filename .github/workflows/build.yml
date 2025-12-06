@@ -53,9 +53,14 @@ jobs:
         run: sudo apt install libvlc-dev libvlccore-dev
 
       - name: Install Libraries
+        shell: bash
         run: |
           haxelib git hmm https://github.com/FNF-SE/hmm --skip-dependencies --quiet
           haxelib run hmm install --quiet
+          if [ "${{ inputs.name }}" == "Windows ARM64" ]; then
+            haxelib remove hxvlc
+            haxelib git hxvlc https://github.com/FNF-SE/hxvlc windowsarm --skip-dependencies --quiet
+          fi
 
       - name: Configure Android
         if: inputs.name == 'Android'

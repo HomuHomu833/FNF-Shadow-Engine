@@ -14,6 +14,12 @@ jobs:
             assetType: S3TC
             artifactName: windowsBuild-x86_64
             artifactPath: export\release\windows\bin\*
+          - name: Windows ARM64
+            os: windows-2025
+            buildArgs: "windows -arm64 -D HXCPP_ARM64"
+            assetType: S3TC
+            artifactName: windowsBuild-arm64
+            artifactPath: export\release\windows\bin\*
           - name: Linux x86_64
             os: ubuntu-24.04
             buildArgs: linux
@@ -46,7 +52,7 @@ jobs:
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
           - name: iOS
             os: macos-26
-            buildArgs: "ios -eval -nosign"
+            buildArgs: "ios -nosign"
             assetType: ASTC
             artifactName: iOSBuild
             artifactPath: "export/release/ios/build/Release-iphoneos/*.ipa"
