@@ -1,3 +1,8 @@
+> [!WARNING]
+> Shadow Engine is under active development and slightly not ready for public use.
+> Expect breaking changes, missing features and unstable builds.
+> Use at your own risk.
+
 <p align="center">
   <img src="./docs/images/SE_Logo.png" alt="Shadow Engine Logo" width="400" />
 </p>
@@ -8,7 +13,8 @@ A highly modified Psych Engine 0.7.3.
 
 Ready to be source-modded.
 
-For the lore of this engine see [ORIGIN.md](./ORIGIN.md).
+> [!NOTE]
+> For the lore of this engine see [ORIGIN.md](./ORIGIN.md).
 
 ## Differences Between The Original
 - Uses our haxelib forks for backporting and fixing stuff
