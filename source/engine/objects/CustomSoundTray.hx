@@ -7,6 +7,7 @@ import openfl.Assets;
 import openfl.display.Bitmap;
 import openfl.display.BitmapData;
 import openfl.media.Sound;
+import openfl.utils.AssetType;
 
 class CustomSoundTray extends FlxSoundTray
 {
@@ -21,7 +22,8 @@ class CustomSoundTray extends FlxSoundTray
 		super();
 		removeChildren();
 
-		var bg:Bitmap = new Bitmap(Assets.getBitmapData('assets/embed/images/soundtray/volumebox.png'));
+		final bgPath:String = Paths.getPath('images/soundtray/volumebox.png', IMAGE, null);
+		var bg:Bitmap = new Bitmap(BitmapData.fromBytes(File.getBytes(bgPath)));
 		bg.scaleX = graphicScale;
 		bg.scaleY = graphicScale;
 		bg.smoothing = true;
@@ -30,7 +32,8 @@ class CustomSoundTray extends FlxSoundTray
 		y = -height;
 		visible = false;
 
-		var backingBar:Bitmap = new Bitmap(Assets.getBitmapData('assets/embed/images/soundtray/bars_10.png'));
+		final backingBarPath:String = Paths.getPath('images/soundtray/bars_10.png', IMAGE, null);
+		var backingBar:Bitmap = new Bitmap(BitmapData.fromBytes(File.getBytes(backingBarPath)));
 		backingBar.x = 9;
 		backingBar.y = 5;
 		backingBar.scaleX = graphicScale;
@@ -43,7 +46,8 @@ class CustomSoundTray extends FlxSoundTray
 
 		for (i in 1...11)
 		{
-			var bar:Bitmap = new Bitmap(Assets.getBitmapData('assets/embed/images/soundtray/bars_$i.png'));
+			final barPath:String = Paths.getPath('images/soundtray/bars_$i.png', IMAGE, null);
+			var bar:Bitmap = new Bitmap(Assets.getBitmapData(barPath));
 			bar.x = 9;
 			bar.y = 5;
 			bar.scaleX = graphicScale;
@@ -56,9 +60,9 @@ class CustomSoundTray extends FlxSoundTray
 		y = -height;
 		screenCenter();
 
-		volumeUpSound = 'assets/embed/sounds/soundtray/Volup.ogg';
-		volumeDownSound = 'assets/embed/sounds/soundtray/Voldown.ogg';
-		volumeMaxSound = 'assets/embed/sounds/soundtray/VolMAX.ogg';
+		volumeUpSound = Paths.getPath('sounds/soundtray/Volup.ogg', SOUND, null);
+		volumeDownSound = Paths.getPath('sounds/soundtray/Voldown.ogg', SOUND, null);
+		volumeMaxSound = Paths.getPath('sounds/soundtray/VolMAX.ogg', SOUND, null);
 
 		_lastVolume = Math.round(MathTools.logToLinear(FlxG.sound.volume) * 10);
 	}

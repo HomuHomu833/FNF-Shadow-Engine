@@ -18,18 +18,6 @@ import backend.Paths;
 
 using StringTools;
 
-// @:bitmap("assets/preloader/banner.png")
-class LogoImage extends BitmapData
-{
-}
-
-#if TOUCH_HERE_TO_PLAY
-@:bitmap('assets/embed/images/preloader/touchHereToPlay.png')
-class TouchHereToPlayImage extends BitmapData
-{
-}
-#end
-
 class FunkinPreloader extends FlxBasePreloader
 {
 	static final BASE_WIDTH:Float = 1280;
@@ -104,12 +92,13 @@ class FunkinPreloader extends FlxBasePreloader
 
 	function setupLogo():Void
 	{
-		logo = createBitmap(LogoImage, function(bmp:Bitmap)
-		{
-			bmp.scaleX = bmp.scaleY = ratio;
-			bmp.x = (this._width - bmp.width) / 2;
-			bmp.y = (this._height - bmp.height) / 2;
-		});
+		final logoPath:String = Paths.getPath('preloader/banner.png', IMAGE);
+		final logoBitmapData:BitmapData = BitmapData.fromBytes(File.getBytes(logoPath));
+		logo = new Bitmap(logoBitmapData);
+		logo.scaleX = logo.scaleY = ratio;
+		logo.x = (this._width - logo.width) / 2;
+		logo.y = (this._height - logo.height) / 2;
+		addChild(logo);
 	}
 
 	function setupProgressBar():Void
@@ -229,12 +218,12 @@ class FunkinPreloader extends FlxBasePreloader
 	#if TOUCH_HERE_TO_PLAY
 	function setupTouchHereToPlay():Void
 	{
-		touchHereToPlay = createBitmap(TouchHereToPlayImage, function(bmp:Bitmap)
-		{
-			bmp.scaleX = bmp.scaleY = ratio;
-			bmp.x = (this._width - bmp.width) / 2;
-			bmp.y = (this._height - bmp.height) / 2;
-		});
+		final touchPath:String = Paths.getPath('images/preloader/touchHereToPlay.png', IMAGE, null);
+		final touchBitmapData:BitmapData = BitmapData.fromBytes(File.getBytes(touchPath));
+		touchHereToPlay = new Bitmap(touchBitmapData);
+		touchHereToPlay.scaleX = touchHereToPlay.scaleY = ratio;
+		touchHereToPlay.x = (this._width - touchHereToPlay.width) / 2;
+		touchHereToPlay.y = (this._height - touchHereToPlay.height) / 2;
 		touchHereToPlay.alpha = 0.0;
 
 		touchHereSprite = new Sprite();
