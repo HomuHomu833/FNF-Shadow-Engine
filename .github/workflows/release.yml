@@ -14,27 +14,45 @@ jobs:
     strategy:
       matrix:
         include:
+          - name: Windows i686
+            os: windows-2025
+            buildArgs: "windows -final -32 -D HXCPP_M32 -D officialBuild"
+            assetType: S3TC
+            artifactName: windowsBuild-i686
+            artifactPath: export\release\windows\bin\*
           - name: Windows x86_64
             os: windows-2025
-            buildArgs: "windows -final -D officialBuild"
+            buildArgs: "windows -final -64 -D HXCPP_M64 -D officialBuild"
             assetType: S3TC
             artifactName: windowsBuild-x86_64
             artifactPath: export\release\windows\bin\*
           - name: Windows ARM64
             os: windows-2025
-            buildArgs: "windows -arm64 -final -D HXCPP_ARM64 -D officialBuild"
+            buildArgs: "windows -final -arm64 -D HXCPP_ARM64 -D officialBuild"
             assetType: S3TC
             artifactName: windowsBuild-arm64
             artifactPath: export\release\windows\bin\*
+          - name: Linux i686
+            os: ubuntu-24.04
+            buildArgs: "linux -final -32 -D HXCPP_M32 -D officialBuild"
+            assetType: S3TC
+            artifactName: linuxBuild-i686
+            artifactPath: export/release/linux/bin/*
           - name: Linux x86_64
             os: ubuntu-24.04
-            buildArgs: "linux -final -D officialBuild"
+            buildArgs: "linux -final -64 -D HXCPP_M64 -D officialBuild"
             assetType: S3TC
             artifactName: linuxBuild-x86_64
             artifactPath: export/release/linux/bin/*
+          - name: Linux ARMV7
+            os: ubuntu-24.04-arm
+            buildArgs: "linux -final -armv7 -D HXCPP_ARMV7 -D officialBuild"
+            assetType: ASTC
+            artifactName: linuxBuild-armv7
+            artifactPath: export/release/linux/bin/*
           - name: Linux ARM64
             os: ubuntu-24.04-arm
-            buildArgs: "linux -arm64 -final -D HXCPP_ARM64 -D officialBuild"
+            buildArgs: "linux -final -arm64 -D HXCPP_ARM64 -D officialBuild"
             assetType: ASTC
             artifactName: linuxBuild-arm64
             artifactPath: export/release/linux/bin/*
@@ -94,6 +112,17 @@ jobs:
       - name: Move iOS File
         run: mv ${{ github.workspace }}/${{ env.PROJECT_NAME }}.ipa /home/runner/${{ env.PROJECT_NAME }}-ASTC-iOS.ipa
 
+      - name: Download Linux i686 Build
+        uses: actions/download-artifact@main
+        with:
+          name: linuxBuild-i686-S3TC
+          path: /home/runner/linuxBuild-i686
+
+      - name: Tar Linux i686 Build For Release
+        run: |
+          cd /home/runner/linuxBuild-i686
+          tar czf "/home/runner/${{ env.PROJECT_NAME }}-S3TC-linux-i686.tar" .
+
       - name: Download Linux x86_64 Build
         uses: actions/download-artifact@main
         with:
@@ -104,6 +133,17 @@ jobs:
         run: |
           cd /home/runner/linuxBuild-x86_64
           tar czf "/home/runner/${{ env.PROJECT_NAME }}-S3TC-linux-x86_64.tar" .
+
+      - name: Download Linux ARMV7 Build
+        uses: actions/download-artifact@main
+        with:
+          name: linuxBuild-armv7-ASTC
+          path: /home/runner/linuxBuild-armv7
+
+      - name: Tar Linux ARMV7 Build For Release
+        run: |
+          cd /home/runner/linuxBuild-armv7
+          tar czf "/home/runner/${{ env.PROJECT_NAME }}-ASTC-linux-armv7.tar" .
 
       - name: Download Linux ARM64 Build
         uses: actions/download-artifact@main
@@ -137,6 +177,17 @@ jobs:
         run: |
           cd /home/runner/macOSBuild-x86_64
           tar czf "/home/runner/${{ env.PROJECT_NAME }}-macOS-x86_64.tar" .
+
+      - name: Download Windows i686 Build
+        uses: actions/download-artifact@main
+        with:
+          name: windowsBuild-i686-S3TC
+          path: /home/runner/windowsBuild-i686
+
+      - name: Zip Windows i686 Build For Release
+        run: |
+          cd /home/runner/windowsBuild-i686
+          zip -r "/home/runner/${{ env.PROJECT_NAME }}-S3TC-windows-i686.zip" .
 
       - name: Download Windows x86_64 Build
         uses: actions/download-artifact@main

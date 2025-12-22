@@ -8,9 +8,15 @@ jobs:
     strategy:
       matrix:
         include:
+          - name: Windows i686
+            os: windows-2025
+            buildArgs: "windows -32 -D HXCPP_M32"
+            assetType: S3TC
+            artifactName: windowsBuild-i686
+            artifactPath: export\release\windows\bin\*
           - name: Windows x86_64
             os: windows-2025
-            buildArgs: windows
+            buildArgs: "windows -64 -D HXCPP_M64"
             assetType: S3TC
             artifactName: windowsBuild-x86_64
             artifactPath: export\release\windows\bin\*
@@ -20,11 +26,23 @@ jobs:
             assetType: S3TC
             artifactName: windowsBuild-arm64
             artifactPath: export\release\windows\bin\*
+          - name: Linux i686
+            os: ubuntu-24.04
+            buildArgs: "linux -32 -D HXCPP_M32"
+            assetType: S3TC
+            artifactName: linuxBuild-i686
+            artifactPath: export/release/linux/bin/*
           - name: Linux x86_64
             os: ubuntu-24.04
-            buildArgs: linux
+            buildArgs: "linux -64 -D HXCPP_M64"
             assetType: S3TC
             artifactName: linuxBuild-x86_64
+            artifactPath: export/release/linux/bin/*
+          - name: Linux ARMV7
+            os: ubuntu-24.04-arm
+            buildArgs: "linux -armv7 -D HXCPP_ARMV7"
+            assetType: ASTC
+            artifactName: linuxBuild-armv7
             artifactPath: export/release/linux/bin/*
           - name: Linux ARM64
             os: ubuntu-24.04-arm
