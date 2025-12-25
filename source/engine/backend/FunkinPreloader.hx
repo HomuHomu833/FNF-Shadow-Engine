@@ -185,7 +185,7 @@ class FunkinPreloader extends FlxBasePreloader
 
 		progressLines = new Sprite();
 		addChild(progressLines);
-		
+
 		for (i in 0...amountOfPieces)
 		{
 			var piece = new Sprite();
