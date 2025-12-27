@@ -3,14 +3,15 @@ package debug.codename;
 import openfl.display.Sprite;
 import openfl.text.TextField;
 import openfl.text.TextFormat;
+import cpp.SizeT;
 
 class MemoryCounter extends Sprite
 {
 	public var memoryText:TextField;
 	public var memoryPeakText:TextField;
 
-	public var memory:Float = 0;
-	public var memoryPeak:Float = 0;
+	public var memory:SizeT = 0;
+	public var memoryPeak:SizeT = 0;
 
 	public function new()
 	{
@@ -41,7 +42,7 @@ class MemoryCounter extends Sprite
 			return;
 		super.__enterFrame(t);
 
-		final mem = external.memory.Memory.getCurrentUsage();
+		final mem:SizeT = external.memory.Memory.getCurrentUsage();
 
 		if (mem == memory)
 		{
@@ -52,12 +53,18 @@ class MemoryCounter extends Sprite
 		memory = mem;
 		if (memoryPeak < memory)
 			memoryPeak = memory;
-		memoryText.text = CoolUtil.getSizeString(memory);
-		memoryPeakText.text = ' / ${CoolUtil.getSizeString(memoryPeak)}';
+
+		refreshText(memory, memoryPeak);
 
 		updateLabelPosition();
 	}
 
 	private inline function updateLabelPosition():Void
 		memoryPeakText.x = memoryText.x + memoryText.width;
+
+	private inline function refreshText(mem:SizeT, peak:SizeT):Void
+	{
+		memoryText.text = (Framerate.debugMode == 2 ? "MEM: " : "") + CoolUtil.getSizeString(mem);
+		memoryPeakText.text = ' / ${CoolUtil.getSizeString(peak)}';
+	}
 }

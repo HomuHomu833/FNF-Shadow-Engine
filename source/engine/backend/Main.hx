@@ -121,7 +121,7 @@ class Main extends Sprite
 
 		addChild(funkinGame);
 
-		addChild(fpsVar = new Framerate());
+		FlxG.game.addChild(fpsVar = new Framerate());
 		debug.codename.SystemInfo.init();
 
 		Lib.current.stage.align = "tl";
@@ -153,9 +153,6 @@ class Main extends Sprite
 		// shader coords fix
 		FlxG.signals.gameResized.add(function(w, h)
 		{
-			if (fpsVar != null)
-				fpsVar.setScale(Math.min(Lib.current.stage.stageWidth / FlxG.width, Lib.current.stage.stageHeight / FlxG.height));
-
 			if (FlxG.cameras != null)
 			{
 				for (cam in FlxG.cameras.list)

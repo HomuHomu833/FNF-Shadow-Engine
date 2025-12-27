@@ -19,6 +19,7 @@ class Framerate extends Sprite
 	public static var textFormat:TextFormat;
 	public static var fpsCounter:FramerateCounter;
 	public static var memoryCounter:MemoryCounter;
+	//public static var gcMemoryCounter:GCMemoryCounter;
 
 	public static var fontName:String = #if windows '${Sys.getEnv("windir")}\\Fonts\\consola.ttf' #else "_typewriter" #end;
 
@@ -62,10 +63,22 @@ class Framerate extends Sprite
 		x = 10;
 		y = 2;
 
+		FlxG.signals.gameResized.add(function(w, h)
+		{
+			setScale(Math.min(openfl.Lib.current.stage.stageWidth / FlxG.width, openfl.Lib.current.stage.stageHeight / FlxG.height));
+		});
+
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, function(e:KeyboardEvent)
 		{
 			if (Controls.instance.justReleased('fpsCounter'))
+			{
 				debugMode = (debugMode + 1) % 3;
+				@:privateAccess
+				{
+					memoryCounter.refreshText(memoryCounter.memory, memoryCounter.memoryPeak);
+					//gcMemoryCounter.refreshText(gcMemoryCounter.gcMemory, gcMemoryCounter.gcMemoryPeak);
+				}
+			}
 		});
 
 		if (__bitmap == null)
@@ -77,6 +90,7 @@ class Framerate extends Sprite
 
 		__addToList(fpsCounter = new FramerateCounter());
 		__addToList(memoryCounter = new MemoryCounter());
+		//__addToList(gcMemoryCounter = new GCMemoryCounter());
 		__addCategory(new SystemInfo());
 	}
 
@@ -85,6 +99,7 @@ class Framerate extends Sprite
 		for (c in categories)
 			c.reload();
 		memoryCounter.reload();
+		//gcMemoryCounter.reload();
 		fpsCounter.reload();
 	}
 
@@ -152,19 +167,21 @@ class Framerate extends Sprite
 		super.__enterFrame(t);
 		bgSprite.alpha = debugAlpha * 0.5;
 
-		x = #if mobile FlxG.game.x + #end 10 + offset.x;
-		y = #if mobile FlxG.game.y + #end 2 + offset.y;
+		x = 10 + offset.x;
+		y = 2 + offset.y;
 
 		var width = MathUtil.maxSmart(fpsCounter.width, memoryCounter.width) + (x * 2);
-		var height = memoryCounter.y + memoryCounter.height;
+		var height = /*gcMemoryCounter.y + gcMemoryCounter.height*/ memoryCounter.y + memoryCounter.height;
 		bgSprite.x = -x;
 		bgSprite.y = offset.x;
 		bgSprite.scaleX = width;
 		bgSprite.scaleY = height;
 
+		//gcMemoryCounter.alpha = debugAlpha;
+
 		var selectable = debugMode == 2; // idk i tried to make it more readable:sob: - Nex
 		{
-			memoryCounter.memoryText.selectable = memoryCounter.memoryPeakText.selectable = fpsCounter.fpsNum.selectable = fpsCounter.fpsLabel.selectable = selectable;
+			memoryCounter.memoryText.selectable = memoryCounter.memoryPeakText.selectable /*= gcMemoryCounter.gcMemoryText.selectable = gcMemoryCounter.gcMemoryPeakText.selectable */ = fpsCounter.fpsNum.selectable = fpsCounter.fpsLabel.selectable = selectable;
 		}
 
 		var y:Float = height + 4;
