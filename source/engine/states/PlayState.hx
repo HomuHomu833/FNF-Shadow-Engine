@@ -333,6 +333,7 @@ class PlayState extends MusicBeatState
 		}
 		curStage = SONG.stage;
 
+		// P-Slice compability
 		if (curStage == "mainStageErect")
 			curStage = "stageErect";
 
