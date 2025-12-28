@@ -1917,11 +1917,11 @@
     [133800, [["Add Camera Zoom", "0.015", "0.03"]]],
     [134300, [["Add Camera Zoom", "0.015", "0.03"]]]
   ],
-  "gfVersion": "nothing",
+  "gfVersion": "gf",
   "needsVoices": true,
   "sections": 0,
   "uiType": "normal",
-  "stage": "mainStageErect",
+  "stage": "stageErect",
   "bpm": 150,
   "gf": "gf"
 }

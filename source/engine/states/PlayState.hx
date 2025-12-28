@@ -333,6 +333,9 @@ class PlayState extends MusicBeatState
 		}
 		curStage = SONG.stage;
 
+		if (curStage == "mainStageErect")
+			curStage = "stageErect";
+
 		var stageData:StageFile = StageData.getStageFile(curStage);
 		if (stageData == null) // Stage couldn't be found, create a dummy stage for preventing a crash
 		{
@@ -380,6 +383,8 @@ class PlayState extends MusicBeatState
 		{
 			case 'stage':
 				new states.stages.Stage();
+			case 'stageErect':
+				new states.stages.StageErect();
 			case 'nothing':
 				new states.stages.Nothing();
 		}
@@ -1752,7 +1757,7 @@ class PlayState extends MusicBeatState
 				twn.active = true);
 
 			paused = false;
-			mobileControls.instance.visible = #if !android touchPad.visible = #end true;
+			mobileControls.instance.visible = touchPad.visible = true;
 			resetRPC(startTimer != null && startTimer.finished);
 			#if (target.threaded)
 			runSongSyncThread();
@@ -2646,8 +2651,7 @@ class PlayState extends MusicBeatState
 
 	public function endSong()
 	{
-		mobileControls.instance.visible = #if !android touchPad.visible = #end
-		false;
+		mobileControls.instance.visible = touchPad.visible = false;
 		// Should kill you if you tried to cheat
 		if (!startingSong)
 		{
