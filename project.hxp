@@ -203,8 +203,12 @@ class Project extends HXProject
 		setHaxedef("FLX_NO_FOCUS_LOST_SCREEN");
 		if (!isDebug())
 			setHaxedef("FLX_NO_DEBUG");
-		setHaxedef("no-deprecation-warnings");
+
 		setHaxedef("message.reporting", "pretty");
+		setHaxedef("no-deprecation-warnings");
+		setHaxedef("lime_disable_assets_version");
+		//setHaxedef("lime_use_old_deltatime");
+
 		setHaxedef("HXCPP_CHECK_POINTER");
 		setHaxedef("HXCPP_STACK_LINE");
 		setHaxedef("HXCPP_STACK_IDS");
@@ -212,9 +216,9 @@ class Project extends HXProject
 		setHaxedef("HXCPP_CATCH_SEGV");
 		if (DCEBUILD.isDisabled())
 			setHaxedef("HXCPP_DEBUG_LINK");
+
 		setHaxedef("HXCPP_GC_GENERATIONAL");
-		setHaxedef("lime_disable_assets_version");
-		//setHaxedef("lime_use_old_deltatime");
+		setHaxedef("HXCPP_GC_BIG_BLOCKS");
 
 		if (isAndroid() && !isDebug())
 		{
