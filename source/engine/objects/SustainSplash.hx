@@ -31,7 +31,17 @@ class SustainSplash extends FlxSprite
 		SustainSplash.frameRate = frameRate;
 		SustainSplash.mainGroup = group;
 
-		for (img in [texture, '${texture}Purple', '${texture}Blue', '${texture}Green', '${texture}Red'])
+		final textures:Array<String> = [texture];
+		if (!useRGBShader)
+		{
+			textures.pop();
+			textures.push('${texture}Purple');
+			textures.push('${texture}Blue');
+			textures.push('${texture}Green');
+			textures.push('${texture}Red');
+		}
+
+		for (img in textures)
 			Paths.getSparrowAtlas(img);
 	}
 
@@ -173,8 +183,20 @@ class SustainSplash extends FlxSprite
 	}
 
 	private function precacheSustainSplash():Void
-		for (img in [texture, '${texture}Purple', '${texture}Blue', '${texture}Green', '${texture}Red'])
+	{
+		final textures:Array<String> = [texture];
+		if (!useRGBShader)
+		{
+			textures.pop();
+			textures.push('${texture}Purple');
+			textures.push('${texture}Blue');
+			textures.push('${texture}Green');
+			textures.push('${texture}Red');
+		}
+
+		for (img in textures)
 			Paths.getSparrowAtlas(img);
+	}
 
 	private static function getTextureNameFromData(noteData:Int):String
 	{
