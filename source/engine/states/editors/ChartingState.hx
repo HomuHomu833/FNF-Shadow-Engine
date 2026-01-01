@@ -2437,10 +2437,7 @@ class ChartingState extends MusicBeatState
 						if (note.hitsoundChartEditor
 							&& ((playSoundBf.checked && note.mustPress) || (playSoundDad.checked && !note.mustPress)))
 						{
-							var soundToPlay = note.hitsound;
-							if (_song.player1 == 'gf') // Easter egg
-								soundToPlay = 'GF_' + Std.string(data + 1);
-
+							final soundToPlay:String = note.mustPress ? 'snap' : 'clap';
 							FlxG.sound.play(Paths.sound(soundToPlay)).pan = note.noteData < 4 ? -0.3 : 0.3; // would be coolio
 							playedSound[data] = true;
 						}

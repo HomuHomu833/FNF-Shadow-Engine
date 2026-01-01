@@ -1,7 +1,7 @@
 package objects;
 
 import shaders.RGBPalette;
-import shaders.RGBPalette.RGBShaderReference;
+import shaders.PixelSplashShader.PixelSplashShaderRef;
 
 class SustainSplash extends FlxSprite
 {
@@ -19,11 +19,11 @@ class SustainSplash extends FlxSprite
 	public var noteData(default, null):Int;
 	public var targetStrumTime(default, null):Float;
 	public var mustPress(default, null):Bool = true;
-	public var rgbShaders(default, null):Array<Array<RGBShaderReference>> = [[], []];
+	public var rgbShaders(default, null):Array<Array<PixelSplashShaderRef>> = [[], []];
 
 	private var curTexture:String = null;
 	private var reachedEnd:Bool = false;
-	private var rgbShader:RGBShaderReference;
+	private var rgbShader:PixelSplashShaderRef;
 
 	public static function init(group:FlxTypedGroup<SustainSplash>, startCrochet:Float, frameRate:Int):Void
 	{
@@ -113,9 +113,6 @@ class SustainSplash extends FlxSprite
 		initRGBShader();
 
 		reloadSustainSplash(getTextureNameFromData(noteData));
-
-		if (this.rgbShader != null)
-			this.rgbShader.enabled = useRGBShader;
 	}
 
 	public function reloadSustainSplash(texture:String, force:Bool = false):Void
@@ -137,7 +134,7 @@ class SustainSplash extends FlxSprite
 		// SHADOW TODO: This breaks offsets need to figure it out later
 		// flipY = ClientPrefs.data.downScroll;
 
-		frames = Paths.getSparrowAtlas(PlayState.isPixelStage ? 'pixelUI/' + texture : texture);
+		frames = Paths.getSparrowAtlas(texture);
 		animation.finishCallback = (name:String) ->
 		{
 			switch (name)
@@ -154,8 +151,6 @@ class SustainSplash extends FlxSprite
 		animation.play('start', true, false, 0);
 
 		antialiasing = PlayState.isPixelStage ? false : ClientPrefs.data.antialiasing;
-		if (PlayState.isPixelStage)
-			setGraphicSize(Std.int(width * PlayState.daPixelZoom));
 		offset.set(PlayState.isPixelStage ? 112.5 : 106.25, 100);
 	}
 
@@ -170,15 +165,16 @@ class SustainSplash extends FlxSprite
 
 			if (rgbShaders[shaderID][noteData] == null)
 			{
-				var rgbShader = new RGBShaderReference(this, Note.initializeGlobalRGBShader(noteData));
-				rgbShader.enabled = false;
+				var rgbShader = new PixelSplashShaderRef();
 				rgbShaders[shaderID][noteData] = rgbShader;
 			}
 
 			if (rgbShader != null)
-				rgbShader.enabled = false;
+				rgbShader.shader.mult.value[0] = 0.0;
 
 			rgbShader = rgbShaders[shaderID][noteData];
+			this.shader = rgbShader.shader;
+			rgbShader.copyValues(useRGBShader ? Note.initializeGlobalRGBShader(noteData) : null);
 		}
 	}
 
@@ -251,7 +247,7 @@ class SustainSplash extends FlxSprite
 		for (arr in rgbShaders)
 			for (shader in arr)
 				if (shader != null)
-					shader.enabled = false;
+					shader.shader.mult.value[0] = 0.0;
 
 		noteData = -1;
 		targetStrumTime = 0;
