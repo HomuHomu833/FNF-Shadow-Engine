@@ -127,7 +127,7 @@ class SustainSplash extends FlxSprite
 		// SHADOW TODO: This breaks offsets need to figure it out later
 		// flipY = ClientPrefs.data.downScroll;
 
-		frames = Paths.getSparrowAtlas(texture);
+		frames = Paths.getSparrowAtlas(PlayState.isPixelStage ? 'pixelUI/' + texture : texture);
 		animation.finishCallback = (name:String) ->
 		{
 			switch (name)
@@ -143,7 +143,9 @@ class SustainSplash extends FlxSprite
 		animation.addByPrefix('end', 'holdCoverEnd0', 24, false);
 		animation.play('start', true, false, 0);
 
-		antialiasing = ClientPrefs.data.antialiasing;
+		antialiasing = PlayState.isPixelStage ? false : ClientPrefs.data.antialiasing;
+		if (PlayState.isPixelStage)
+			setGraphicSize(Std.int(width * PlayState.daPixelZoom));
 		offset.set(PlayState.isPixelStage ? 112.5 : 106.25, 100);
 	}
 
