@@ -74,6 +74,13 @@ jobs:
         run: |
           haxelib git hmm https://github.com/FNF-SE/hmm --skip-dependencies --quiet
           haxelib run hmm install --quiet
+          if [ "${{ inputs.name }}" == "Windows ARM64" ]; then
+            haxelib remove hxvlc
+            haxelib git hxvlc https://github.com/FNF-SE/hxvlc winarm64 --skip-dependencies --quiet
+          elif [ "${{ inputs.name }}" == "Windows i686" ]; then
+            haxelib remove hxvlc
+            haxelib git hxvlc https://github.com/FNF-SE/hxvlc win32 --skip-dependencies --quiet
+          fi
 
       - name: Configure Android
         if: inputs.name == 'Android'
