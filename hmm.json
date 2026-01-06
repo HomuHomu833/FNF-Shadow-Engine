@@ -40,7 +40,7 @@
       "type": "git",
       "dir": null,
       "ref": null,
-      "url": "https://github.com/HomuHomu833-haxe-stuff/hxcpp"
+      "url": "https://github.com/FNF-SE/hxcpp"
     },
     {
       "name": "SScript",
@@ -71,14 +71,14 @@
       "type": "git",
       "dir": null,
       "ref": null,
-      "url": "https://github.com/HomuHomu833-haxe-stuff/format"
+      "url": "https://github.com/FNF-SE/format"
     },
     {
       "name": "hxp",
       "type": "git",
       "dir": null,
       "ref": null,
-      "url": "https://github.com/HomuHomu833-haxe-stuff/hxp"
+      "url": "https://github.com/FNF-SE/hxp"
     },
     {
       "name": "hxvlc",
@@ -92,7 +92,7 @@
       "type": "git",
       "dir": null,
       "ref": null,
-      "url": "https://github.com/MaybeMaru/flixel-animate"
+      "url": "https://github.com/FNF-SE/flixel-animate"
 	},
 	{
       "name": "fnf-modcharting-tools",
