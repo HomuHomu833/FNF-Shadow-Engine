@@ -219,9 +219,6 @@ class Project extends HXProject
 		if (DCEBUILD.isDisabled())
 			setHaxedef("HXCPP_DEBUG_LINK");
 
-		setHaxedef("HXCPP_GC_GENERATIONAL");
-		setHaxedef("HXCPP_GC_BIG_BLOCKS");
-
 		if (isAndroid() && !isDebug())
 		{
 			keystore = new Keystore();

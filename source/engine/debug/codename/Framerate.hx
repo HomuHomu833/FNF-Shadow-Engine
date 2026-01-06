@@ -19,7 +19,6 @@ class Framerate extends Sprite
 	public static var textFormat:TextFormat;
 	public static var fpsCounter:FramerateCounter;
 	public static var memoryCounter:MemoryCounter;
-	//public static var gcMemoryCounter:GCMemoryCounter;
 
 	public static var fontName:String = #if windows '${Sys.getEnv("windir")}\\Fonts\\consola.ttf' #else "_typewriter" #end;
 
@@ -76,7 +75,6 @@ class Framerate extends Sprite
 				@:privateAccess
 				{
 					memoryCounter.refreshText(memoryCounter.memory, memoryCounter.memoryPeak);
-					//gcMemoryCounter.refreshText(gcMemoryCounter.gcMemory, gcMemoryCounter.gcMemoryPeak);
 				}
 			}
 		});
@@ -90,7 +88,6 @@ class Framerate extends Sprite
 
 		__addToList(fpsCounter = new FramerateCounter());
 		__addToList(memoryCounter = new MemoryCounter());
-		//__addToList(gcMemoryCounter = new GCMemoryCounter());
 		__addCategory(new SystemInfo());
 	}
 
@@ -99,7 +96,6 @@ class Framerate extends Sprite
 		for (c in categories)
 			c.reload();
 		memoryCounter.reload();
-		//gcMemoryCounter.reload();
 		fpsCounter.reload();
 	}
 
@@ -171,17 +167,15 @@ class Framerate extends Sprite
 		y = 2 + offset.y;
 
 		var width = MathUtil.maxSmart(fpsCounter.width, memoryCounter.width) + (x * 2);
-		var height = /*gcMemoryCounter.y + gcMemoryCounter.height*/ memoryCounter.y + memoryCounter.height;
+		var height = memoryCounter.y + memoryCounter.height;
 		bgSprite.x = -x;
 		bgSprite.y = offset.x;
 		bgSprite.scaleX = width;
 		bgSprite.scaleY = height;
 
-		//gcMemoryCounter.alpha = debugAlpha;
-
 		var selectable = debugMode == 2; // idk i tried to make it more readable:sob: - Nex
 		{
-			memoryCounter.memoryText.selectable = memoryCounter.memoryPeakText.selectable /*= gcMemoryCounter.gcMemoryText.selectable = gcMemoryCounter.gcMemoryPeakText.selectable */ = fpsCounter.fpsNum.selectable = fpsCounter.fpsLabel.selectable = selectable;
+			memoryCounter.memoryText.selectable = memoryCounter.memoryPeakText.selectable = fpsCounter.fpsNum.selectable = fpsCounter.fpsLabel.selectable = selectable;
 		}
 
 		var y:Float = height + 4;
