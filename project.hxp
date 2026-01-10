@@ -274,7 +274,7 @@ class Project extends HXProject
 
 			if (keyData == null || !Reflect.hasField(keyData, "alias") || !Reflect.hasField(keyData, "storepass") || !Reflect.hasField(keyData, "keypass"))
 			{
-				trace('\x1B[0;31m[ERROR]\x1B[0;37m keystore.json missing required fields (alias, storepass, keypass)');
+				error('Keystore JSON file missing required fields (alias, storepass, keypass)');
 				Sys.exit(1);
 			}
 
