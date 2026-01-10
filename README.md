@@ -33,7 +33,7 @@ Ready to be source-modded.
 - Kade Engine Results Screen
 - PlayState has `changeNoteSkin` for easy in-game note skin changing
 - Play as Opponent
-- Stripped to only have Test song and some characters (TBD to re-add, see [TODO](./todo/TODO.md))
+- Stripped to only have Test song and some characters<br>(TBD to re-add, see [TODO](./todo/TODO.md))
 - Kade Engine Note Timing (man I feel old), VSync and Pop Up Score Option
 - Includes all classes as possible into source
 - Scriptable Classes Support!! (ig idk honestly if I [Homura] did good job)
