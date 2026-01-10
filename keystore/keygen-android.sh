@@ -7,9 +7,9 @@ cleanup() {
 }
 trap cleanup EXIT INT TERM
 
-printf "Key alias name [fnf-se]: "
+printf "Key alias name [unknown]: "
 IFS= read -r ALIAS
-ALIAS="${ALIAS:-fnf-se}"
+ALIAS="${ALIAS:-unknown}"
 
 while true; do
   echo "Keystore password:"

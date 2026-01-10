@@ -8,9 +8,9 @@ function Read-Password($Prompt) {
     )
 }
 
-$alias = Read-Host "Key alias name [fnf-se]"
+$alias = Read-Host "Key alias name [unknown]"
 if ([string]::IsNullOrWhiteSpace($alias)) {
-    $alias = "fnf-se"
+    $alias = "unknown"
 }
 
 while ($true) {

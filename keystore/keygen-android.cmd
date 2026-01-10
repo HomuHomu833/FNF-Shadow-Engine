@@ -1,8 +1,8 @@
 @echo off
 setlocal EnableDelayedExpansion
 
-set ALIAS=fnf-se
-set /p INPUT=Key alias name [fnf-se]:
+set ALIAS=unknown
+set /p INPUT=Key alias name [unknown]:
 if not "%INPUT%"=="" set ALIAS=%INPUT%
 
 :password_loop
