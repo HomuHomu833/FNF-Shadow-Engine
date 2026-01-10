@@ -21,6 +21,11 @@ on:
       artifactPath:
         required: true
         type: string
+    secrets:
+      SE_KEYSTORE_FILE:
+        required: false
+      SE_KEYSTORE_INFO_FILE:
+        required: false
 
 env:
   HAXE_VERSION: 4.3.7
@@ -89,6 +94,16 @@ jobs:
           haxelib run lime config ANDROID_NDK_ROOT $ANDROID_NDK_LATEST_HOME
           haxelib run lime config JAVA_HOME $JAVA_HOME_21_arm64
           haxelib run lime config ANDROID_SETUP true
+
+      - name: Extract Android keystore
+        if: inputs.name == 'Android' && github.repository_owner == 'FNF-SE'
+        shell: bash
+        env:
+          SE_KEYSTORE_FILE: ${{ secrets.SE_KEYSTORE_FILE }}
+          SE_KEYSTORE_INFO_FILE: ${{ secrets.SE_KEYSTORE_INFO_FILE }}
+        run: |
+          echo "$SE_KEYSTORE_FILE" | base64 --decode > keystore/android/key.keystore
+          echo "$SE_KEYSTORE_INFO_FILE" | base64 --decode > keystore/android/keystore.json
 
       - name: Compile
         shell: bash
