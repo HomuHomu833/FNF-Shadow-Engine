@@ -516,7 +516,7 @@ class MusicBeatSubstate extends FlxSubState
 	#if HSCRIPT_ALLOWED
 	public function startHScriptsNamed(scriptFile:String)
 	{
-		var foundScripts:Null<Array<String>> = null;
+		var foundScripts:Array<String> = [];
 		// backwards compatibility
 		if (scriptFile.endsWith(".hx")
 			|| scriptFile.endsWith(".hscript")

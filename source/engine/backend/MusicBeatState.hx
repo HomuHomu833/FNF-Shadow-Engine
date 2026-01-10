@@ -632,7 +632,7 @@ class MusicBeatState extends #if MODCHARTS_ALLOWED ModchartMusicBeatState #else 
 	#if HSCRIPT_ALLOWED
 	public function startHScriptsNamed(scriptFile:String)
 	{
-		var foundScripts:Null<Array<String>> = null;
+		var foundScripts:Array<String> = [];
 		// backwards compatibility
 		if (scriptFile.endsWith(".hx")
 			|| scriptFile.endsWith(".hscript")
