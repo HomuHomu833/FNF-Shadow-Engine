@@ -209,7 +209,6 @@ class Project extends HXProject
 		setHaxedef("message.reporting", "pretty");
 		setHaxedef("no-deprecation-warnings");
 		setHaxedef("lime_disable_assets_version");
-		//setHaxedef("lime_use_old_deltatime");
 
 		setHaxedef("HXCPP_CHECK_POINTER");
 		setHaxedef("HXCPP_STACK_LINE");
