@@ -314,7 +314,7 @@ class MusicBeatSubstate extends FlxSubState
 		startLuasNamed('substatescripts/' + currentClassName + '.lua');
 		#end
 		#if HSCRIPT_ALLOWED
-		startHScriptsNamed('substatescripts/' + currentClassName + '.hx');
+		startHScriptsNamed('substatescripts/' + currentClassName);
 		#end
 		super.create();
 		callOnScripts('onCreatePost');
@@ -516,21 +516,38 @@ class MusicBeatSubstate extends FlxSubState
 	#if HSCRIPT_ALLOWED
 	public function startHScriptsNamed(scriptFile:String)
 	{
-		#if MODS_ALLOWED
-		var scriptToLoad:String = Paths.modFolders(scriptFile);
-		if (!FileSystem.exists(scriptToLoad))
-			scriptToLoad = Paths.getSharedPath(scriptFile);
-		#else
-		var scriptToLoad:String = Paths.getSharedPath(scriptFile);
-		#end
-
-		if (#if MODS_ALLOWED FileSystem.exists(scriptToLoad) #else openfl.Assets.exists(scriptToLoad) #end)
+		var foundScripts:Null<Array<String>> = null;
+		// backwards compatibility
+		if (scriptFile.endsWith(".hx")
+			|| scriptFile.endsWith(".hscript")
+			|| scriptFile.endsWith(".hxs")
+			|| scriptFile.endsWith(".hxc"))
+			foundScripts.push(scriptFile);
+		else
 		{
-			if (SScript.global.exists(scriptToLoad))
-				return false;
+			foundScripts.push(scriptFile + ".hscript");
+			foundScripts.push(scriptFile + ".hxs");
+			foundScripts.push(scriptFile + ".hxc");
+		}
 
-			initHScript(scriptToLoad);
-			return true;
+		for (file in foundScripts)
+		{
+			#if MODS_ALLOWED
+			var scriptToLoad:String = Paths.modFolders(file);
+			if (!FileSystem.exists(scriptToLoad))
+				scriptToLoad = Paths.getSharedPath(file);
+			#else
+			var scriptToLoad:String = Paths.getSharedPath(file);
+			#end
+
+			if (#if MODS_ALLOWED FileSystem.exists(scriptToLoad) #else openfl.Assets.exists(scriptToLoad) #end)
+			{
+				if (SScript.global.exists(scriptToLoad))
+					return false;
+
+				initHScript(scriptToLoad);
+				return true;
+			}
 		}
 		return false;
 	}

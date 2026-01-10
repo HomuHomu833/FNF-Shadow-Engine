@@ -757,10 +757,17 @@ class FunkinLua
 			}
 			luaTrace("addLuaScript: Script doesn't exist!", false, false, FlxColor.RED);
 		});
-		set("addHScript", function(luaFile:String, ?ignoreAlreadyRunning:Bool = false)
+		set("addHScript", function(hscriptFile:String, ?ignoreAlreadyRunning:Bool = false)
 		{
 			#if HSCRIPT_ALLOWED
-			var foundScript:String = findScript(luaFile, '.hx');
+			final extensions:Array<String> = [".hscript", ".hx", ".hxs", ".hxc"];
+			var foundScript:Null<String> = null;
+			for (ext in extensions)
+			{
+				foundScript = findScript(hscriptFile, ext);
+				if (foundScript != null)
+					break;
+			}
 			if (foundScript != null)
 			{
 				if (!ignoreAlreadyRunning)
@@ -802,10 +809,10 @@ class FunkinLua
 			luaTrace('removeLuaScript: Script $luaFile isn\'t running!', false, false, FlxColor.RED);
 			return false;
 		});
-		set("removeHScript", function(luaFile:String, ?ignoreAlreadyRunning:Bool = false)
+		set("removeHScript", function(hscriptFile:String, ?ignoreAlreadyRunning:Bool = false)
 		{
 			#if HSCRIPT_ALLOWED
-			var foundScript:String = findScript(luaFile, '.hx');
+			var foundScript:String = findScript(hscriptFile, '.hx');
 			if (foundScript != null)
 			{
 				if (!ignoreAlreadyRunning)
@@ -814,13 +821,13 @@ class FunkinLua
 						final hs:HScript = cast(script, HScript);
 						if (hs.origin == foundScript)
 						{
-							trace('Closing script ' + (hs.origin != null ? hs.origin : luaFile));
+							trace('Closing script ' + (hs.origin != null ? hs.origin : hscriptFile));
 							hs.destroy();
 							return true;
 						}
 					}
 			}
-			luaTrace('removeHScript: Script $luaFile isn\'t running!', false, false, FlxColor.RED);
+			luaTrace('removeHScript: Script $hscriptFile isn\'t running!', false, false, FlxColor.RED);
 			return false;
 			#else
 			luaTrace("removeHScript: HScript is not supported on this platform!", false, false, FlxColor.RED);

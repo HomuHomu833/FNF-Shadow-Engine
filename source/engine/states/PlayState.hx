@@ -424,7 +424,7 @@ class PlayState extends MusicBeatState
 				#end
 
 				#if HSCRIPT_ALLOWED
-				if (file.toLowerCase().endsWith('.hx'))
+				if (file.toLowerCase().endsWith('.hscript') || file.toLowerCase().endsWith('.hx') || file.toLowerCase().endsWith('.hxs') || file.toLowerCase().endsWith('.hxc'))
 					FunkinLua.getCurrentMusicState().initHScript(folder + file);
 				#end
 			}
@@ -437,7 +437,7 @@ class PlayState extends MusicBeatState
 		#end
 
 		#if HSCRIPT_ALLOWED
-		FunkinLua.getCurrentMusicState().startHScriptsNamed('stages/' + curStage + '.hx');
+		FunkinLua.getCurrentMusicState().startHScriptsNamed('stages/' + curStage);
 		#end
 
 		if (!stageData.hide_girlfriend && !ClientPrefs.data.lowQuality)
@@ -611,9 +611,9 @@ class PlayState extends MusicBeatState
 
 		#if HSCRIPT_ALLOWED
 		for (notetype in noteTypes)
-			FunkinLua.getCurrentMusicState().startHScriptsNamed('custom_notetypes/' + notetype + '.hx');
+			FunkinLua.getCurrentMusicState().startHScriptsNamed('custom_notetypes/' + notetype);
 		for (event in eventsPushed)
-			FunkinLua.getCurrentMusicState().startHScriptsNamed('custom_events/' + event + '.hx');
+			FunkinLua.getCurrentMusicState().startHScriptsNamed('custom_events/' + event);
 		#end
 		noteTypes = null;
 		eventsPushed = null;
@@ -637,7 +637,7 @@ class PlayState extends MusicBeatState
 				#end
 
 				#if HSCRIPT_ALLOWED
-				if (file.toLowerCase().endsWith('.hx'))
+				if (file.toLowerCase().endsWith('.hscript') || file.toLowerCase().endsWith('.hx') || file.toLowerCase().endsWith('.hxs') || file.toLowerCase().endsWith('.hxc'))
 					FunkinLua.getCurrentMusicState().initHScript(folder + file);
 				#end
 			}
@@ -830,21 +830,33 @@ class PlayState extends MusicBeatState
 
 		// HScript
 		#if HSCRIPT_ALLOWED
+		final extensions:Array<String> = ['.hscript', '.hx', '.hxs', '.hxc'];
+		final baseScriptPath:String = 'characters/$name';
 		var doPush:Bool = false;
-		var scriptFile:String = 'characters/' + name + '.hx';
-		#if MODS_ALLOWED
-		var replacePath:String = Paths.modFolders(scriptFile);
-		if (FileSystem.exists(replacePath))
+		var scriptFile:Null<String> = null;
+
+		for (ext in extensions)
 		{
-			scriptFile = replacePath;
-			doPush = true;
-		}
-		else
-		#end
-		{
-			scriptFile = Paths.getSharedPath(scriptFile);
-			if (FileSystem.exists(scriptFile))
+			var origin:String = baseScriptPath + ext;
+			#if MODS_ALLOWED
+			var replacePath:String = Paths.modFolders(origin);
+			if (FileSystem.exists(replacePath))
+			{
+				scriptFile = replacePath;
 				doPush = true;
+				break;
+			}
+			else
+			#end
+			{
+				origin = Paths.getSharedPath(origin);
+				if (FileSystem.exists(origin))
+				{
+					scriptFile = origin;
+					doPush = true;
+					break;
+				}
+			}
 		}
 
 		if (doPush)
