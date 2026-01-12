@@ -424,7 +424,8 @@ class PlayState extends MusicBeatState
 				#end
 
 				#if HSCRIPT_ALLOWED
-				if (file.toLowerCase().endsWith('.hscript') || file.toLowerCase().endsWith('.hx') || file.toLowerCase().endsWith('.hxs') || file.toLowerCase().endsWith('.hxc'))
+				final filteredFiles:Array<String> = FunkinLua.getCurrentMusicState().hscriptExtensions.filter(ext -> file.toLowerCase().endsWith(ext));
+				for (file in filteredFiles)
 					FunkinLua.getCurrentMusicState().initHScript(folder + file);
 				#end
 			}
@@ -637,7 +638,8 @@ class PlayState extends MusicBeatState
 				#end
 
 				#if HSCRIPT_ALLOWED
-				if (file.toLowerCase().endsWith('.hscript') || file.toLowerCase().endsWith('.hx') || file.toLowerCase().endsWith('.hxs') || file.toLowerCase().endsWith('.hxc'))
+				final filteredFiles:Array<String> = FunkinLua.getCurrentMusicState().hscriptExtensions.filter(ext -> file.toLowerCase().endsWith(ext));
+				for (file in filteredFiles)
 					FunkinLua.getCurrentMusicState().initHScript(folder + file);
 				#end
 			}
@@ -830,12 +832,11 @@ class PlayState extends MusicBeatState
 
 		// HScript
 		#if HSCRIPT_ALLOWED
-		final extensions:Array<String> = ['.hscript', '.hx', '.hxs', '.hxc'];
 		final baseScriptPath:String = 'characters/$name';
 		var doPush:Bool = false;
 		var scriptFile:Null<String> = null;
 
-		for (ext in extensions)
+		for (ext in FunkinLua.getCurrentMusicState().hscriptExtensions)
 		{
 			var origin:String = baseScriptPath + ext;
 			#if MODS_ALLOWED

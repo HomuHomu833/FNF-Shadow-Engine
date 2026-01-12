@@ -24,6 +24,7 @@ class MusicBeatState extends #if MODCHARTS_ALLOWED ModchartMusicBeatState #else 
 
 	#if HSCRIPT_ALLOWED
 	public var hscriptArray:Array<HScript> = [];
+	public final hscriptExtensions:Array<String> = ['.hscript', '.hx', '.hxs', '.hxc'];
 	public var instancesExclude:Array<String> = [];
 	#end
 
@@ -632,19 +633,15 @@ class MusicBeatState extends #if MODCHARTS_ALLOWED ModchartMusicBeatState #else 
 	#if HSCRIPT_ALLOWED
 	public function startHScriptsNamed(scriptFile:String)
 	{
+		final lower:String = scriptFile.toLowerCase();
+		final filteredFiles:Array<String> = hscriptExtensions.filter(ext -> lower.endsWith(ext));
 		var foundScripts:Array<String> = [];
-		// backwards compatibility
-		if (scriptFile.endsWith(".hx")
-			|| scriptFile.endsWith(".hscript")
-			|| scriptFile.endsWith(".hxs")
-			|| scriptFile.endsWith(".hxc"))
-			foundScripts.push(scriptFile);
+
+		if (filteredFiles.length > 0)
+			for (i in 0...filteredFiles.length)
+				foundScripts.push(filteredFiles[i]);
 		else
-		{
-			foundScripts.push(scriptFile + ".hscript");
-			foundScripts.push(scriptFile + ".hxs");
-			foundScripts.push(scriptFile + ".hxc");
-		}
+			foundScripts.push(scriptFile);
 
 		for (file in foundScripts)
 		{
