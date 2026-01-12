@@ -631,15 +631,21 @@ class MusicBeatState extends #if MODCHARTS_ALLOWED ModchartMusicBeatState #else 
 	#if HSCRIPT_ALLOWED
 	public function startHScriptsNamed(scriptFile:String)
 	{
-		final lower:String = scriptFile.toLowerCase();
-		final filteredFiles:Array<String> = hscriptExtensions.filter(ext -> lower.endsWith(ext));
 		var foundScripts:Array<String> = [];
+		var matches:Bool = false;
 
-		if (filteredFiles.length > 0)
-			for (i in 0...filteredFiles.length)
-				foundScripts.push(filteredFiles[i]);
-		else
+		for (ext in hscriptExtensions)
+			if (scriptFile.toLowerCase().endsWith(ext))
+			{
+				matches = true;
+				break;
+			}
+
+		if (matches)
 			foundScripts.push(scriptFile);
+		else
+			for (ext in hscriptExtensions)
+				foundScripts.push(scriptFile + ext);
 
 		for (file in foundScripts)
 		{

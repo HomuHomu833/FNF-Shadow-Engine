@@ -55,6 +55,8 @@ class HScript extends SScript
 
 		this.varsToBring = varsToBring;
 
+		//var times:Float = Date.now().getTime();
+
 		super(file, false, false);
 
 		#if LUA_ALLOWED
@@ -79,6 +81,8 @@ class HScript extends SScript
 
 		preset();
 		execute();
+
+		//trace('hscript file loaded successfully: $origin (${Std.int(Date.now().getTime() - times)}ms)');
 	}
 
 	var varsToBring:Any = null;

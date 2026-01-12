@@ -424,8 +424,14 @@ class PlayState extends MusicBeatState
 				#end
 
 				#if HSCRIPT_ALLOWED
-				final filteredFiles:Array<String> = FunkinLua.getCurrentMusicState().hscriptExtensions.filter(ext -> file.toLowerCase().endsWith(ext));
-				for (file in filteredFiles)
+				var matches:Bool = false;
+				for (ext in hscriptExtensions)
+					if (file.toLowerCase().endsWith(ext))
+					{
+						matches = true;
+						break;
+					}
+				if (matches)
 					FunkinLua.getCurrentMusicState().initHScript(folder + file);
 				#end
 			}
@@ -638,8 +644,14 @@ class PlayState extends MusicBeatState
 				#end
 
 				#if HSCRIPT_ALLOWED
-				final filteredFiles:Array<String> = FunkinLua.getCurrentMusicState().hscriptExtensions.filter(ext -> file.toLowerCase().endsWith(ext));
-				for (file in filteredFiles)
+				var matches:Bool = false;
+				for (ext in hscriptExtensions)
+					if (file.toLowerCase().endsWith(ext))
+					{
+						matches = true;
+						break;
+					}
+				if (matches)
 					FunkinLua.getCurrentMusicState().initHScript(folder + file);
 				#end
 			}
@@ -833,9 +845,8 @@ class PlayState extends MusicBeatState
 		var scriptFile:String = null;
 		doPush = false;
 
-		for (dynamicExt in cast(FunkinLua.getCurrentMusicState().hscriptExtensions, Array<Dynamic>))
+		for (ext in hscriptExtensions)
 		{
-			final ext:String = cast(dynamicExt, String);
 			var candidate:String = baseScriptPath + ext;
 
 			#if MODS_ALLOWED
