@@ -99,13 +99,6 @@ class Paths
 		openfl.Assets.cache.clear("songs");
 	}
 
-	static public var currentLevel:String;
-
-	static public function setCurrentLevel(name:String)
-	{
-		currentLevel = name.toLowerCase();
-	}
-
 	public static function getPath(file:String, ?type:AssetType = TEXT, ?library:Null<String> = null, ?modsAllowed:Bool = false):String
 	{
 		#if MODS_ALLOWED
@@ -125,17 +118,6 @@ class Paths
 
 		if (library != null)
 			return getLibraryPath(file, library);
-
-		if (currentLevel != null)
-		{
-			var levelPath:String = '';
-			if (currentLevel != 'shared')
-			{
-				levelPath = getLibraryPathForce(file, 'week_assets', currentLevel);
-				if (Assets.exists(levelPath, type))
-					return levelPath;
-			}
-		}
 
 		return getSharedPath(file);
 	}

@@ -25,7 +25,7 @@ class MusicBeatState extends #if MODCHARTS_ALLOWED ModchartMusicBeatState #else 
 
 	#if HSCRIPT_ALLOWED
 	public var hscriptArray:Array<HScript> = [];
-	public final hscriptExtensions:Array<String> = ['.hscript', '.hx', '.hxs', '.hxc'];
+	public final hscriptExtensions:Array<String> = ['.hx', '.hscript', '.hxs', '.hxc'];
 	public var instancesExclude:Array<String> = [];
 	#end
 
@@ -634,6 +634,9 @@ class MusicBeatState extends #if MODCHARTS_ALLOWED ModchartMusicBeatState #else 
 	{
 		function doFile(file:String):Bool
 		{
+			if (!hscriptExtensions.contains(Path.extension(file)))
+				return false;
+
 			if (doFileMethod != null)
 				return doFileMethod(scriptFile);
 
@@ -653,9 +656,7 @@ class MusicBeatState extends #if MODCHARTS_ALLOWED ModchartMusicBeatState #else 
 				return true;
 			}
 			else
-			{
 				return false;
-			}
 		}
 
 		// if the script already has a set extension just load it directly

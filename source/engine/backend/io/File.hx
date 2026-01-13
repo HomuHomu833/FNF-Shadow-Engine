@@ -36,11 +36,11 @@ class File
 	public static function getContent(path:String):Null<String>
 	{
 		#if MODS_ALLOWED
-		var actualPath:String = path;
+		var actualPath:String = cwd(path);
 		#if linux
-		actualPath = getCaseInsensitivePath(cwd(path));
+		actualPath = getCaseInsensitivePath(path);
 		if (actualPath == null)
-			actualPath = cwd(path);
+			actualPath = path;
 		#end
 		if (SysFileSystem.exists(actualPath))
 			return SysFile.getContent(actualPath);
@@ -55,11 +55,11 @@ class File
 	public static function getBytes(path:String):Null<haxe.io.Bytes>
 	{
 		#if MODS_ALLOWED
-		var actualPath:String = path;
+		var actualPath:String = cwd(path);
 		#if linux
-		actualPath = getCaseInsensitivePath(cwd(path));
+		actualPath = getCaseInsensitivePath(path);
 		if (actualPath == null)
-			actualPath = cwd(path);
+			actualPath = path;
 		#end
 		if (SysFileSystem.exists(actualPath))
 			return SysFile.getBytes(actualPath);
@@ -94,11 +94,11 @@ class File
 	public static function read(path:String, binary:Bool = true):Null<FileInput>
 	{
 		#if MODS_ALLOWED
-		var actualPath:String = path;
+		var actualPath:String = cwd(path);
 		#if linux
-		actualPath = getCaseInsensitivePath(cwd(path));
+		actualPath = getCaseInsensitivePath(path);
 		if (actualPath == null)
-			actualPath = cwd(path);
+			actualPath = path;
 		#end
 		return SysFile.read(actualPath, binary);
 		#else
@@ -109,11 +109,11 @@ class File
 	public static function write(path:String, binary:Bool = true):Null<FileOutput>
 	{
 		#if MODS_ALLOWED
-		var actualPath:String = path;
+		var actualPath:String = cwd(path);
 		#if linux
-		actualPath = getCaseInsensitivePath(cwd(path));
+		actualPath = getCaseInsensitivePath(path);
 		if (actualPath == null)
-			actualPath = cwd(path);
+			actualPath = path;
 		#end
 		return SysFile.write(actualPath, binary);
 		#else
@@ -124,11 +124,11 @@ class File
 	public static function append(path:String, binary:Bool = true):Null<FileOutput>
 	{
 		#if MODS_ALLOWED
-		var actualPath:String = path;
+		var actualPath:String = cwd(path);
 		#if linux
-		actualPath = getCaseInsensitivePath(cwd(path));
+		actualPath = getCaseInsensitivePath(path);
 		if (actualPath == null)
-			actualPath = cwd(path);
+			actualPath = path;
 		#end
 		return SysFile.append(actualPath, binary);
 		#else
@@ -139,11 +139,11 @@ class File
 	public static function update(path:String, binary:Bool = true):Null<FileOutput>
 	{
 		#if MODS_ALLOWED
-		var actualPath:String = path;
+		var actualPath:String = cwd(path);
 		#if linux
-		actualPath = getCaseInsensitivePath(cwd(path));
+		actualPath = getCaseInsensitivePath(path);
 		if (actualPath == null)
-			actualPath = cwd(path);
+			actualPath = path;
 		#end
 		return SysFile.update(actualPath, binary);
 		#else
@@ -154,11 +154,11 @@ class File
 	public static function copy(srcPath:String, dstPath:String):Void
 	{
 		#if MODS_ALLOWED
-		var actualSrc:String = srcPath;
+		var actualSrc:String = cwd(srcPath);
 		#if linux
-		actualSrc = getCaseInsensitivePath(cwd(srcPath));
+		actualSrc = getCaseInsensitivePath(actualSrc);
 		if (actualSrc == null)
-			actualSrc = cwd(srcPath);
+			actualSrc = actualSrc;
 		#end
 		SysFile.copy(actualSrc, dstPath);
 		#end

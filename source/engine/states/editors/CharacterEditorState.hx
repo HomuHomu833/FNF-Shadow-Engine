@@ -1146,9 +1146,6 @@ class CharacterEditorState extends MusicBeatState
 
 	inline function loadBG()
 	{
-		var lastLoaded = Paths.currentLevel;
-		Paths.currentLevel = assetFolder;
-
 		// bg data
 		var bg:BGSprite = new BGSprite('stageback', -600, -200, 0.9, 0.9);
 		add(bg);
@@ -1160,8 +1157,6 @@ class CharacterEditorState extends MusicBeatState
 
 		dadPosition.set(100, 100);
 		bfPosition.set(770, 100);
-
-		Paths.currentLevel = lastLoaded;
 	}
 
 	inline function updatePointerPos(?snap:Bool = true)
