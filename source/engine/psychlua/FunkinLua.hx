@@ -763,82 +763,83 @@ class FunkinLua
 		set("addHScript", function(hscriptFile:String, ?ignoreAlreadyRunning:Bool = false)
 		{
 			#if HSCRIPT_ALLOWED
-			var foundScript:Null<String> = null;
-			for (dynamicExt in cast(FunkinLua.getCurrentMusicState().hscriptExtensions, Array<Dynamic>))
-			{
-				final ext:String = cast(dynamicExt, String);
-				foundScript = findScript(hscriptFile, ext);
-				if (foundScript != null)
-					break;
-			}
-			if (foundScript != null)
-			{
-				if (!ignoreAlreadyRunning)
-					for (script in cast(game.hscriptArray, Array<Dynamic>))
+			FunkinLua.getCurrentMusicState().startHScriptsNamed(hscriptFile, function(file:String) {
+				var scriptToLoad:String = '';
+				#if MODS_ALLOWED
+				scriptToLoad = Paths.modFolders(file);
+				if (!FileSystem.exists(scriptToLoad))
+				#end
+				scriptToLoad = Paths.getSharedPath(file);
+
+				if (FileSystem.exists(scriptToLoad))
+				{
+					if (SScript.global.exists(scriptToLoad) && !ignoreAlreadyRunning)
 					{
-						final hs:HScript = cast(script, HScript);
-						if (hs.origin == foundScript)
-						{
-							luaTrace('addHScript: The script "' + foundScript + '" is already running!');
-							return;
-						}
+						luaTrace('addHScript: The script "' + hscriptFile + '" is already running!');
+						return false;
 					}
 
-				FunkinLua.getCurrentMusicState().initHScript(foundScript);
-				return;
-			}
-			luaTrace("addHScript: Script doesn't exist!", false, false, FlxColor.RED);
+					FunkinLua.getCurrentMusicState().initHScript(scriptToLoad);
+					return true;
+				}
+				else
+				{
+					luaTrace("addHScript: Script doesn't exist!", false, false, FlxColor.RED);
+					return false;
+				}
+			});
 			#else
 			luaTrace("addHScript: HScript is not supported on this platform!", false, false, FlxColor.RED);
 			#end
 		});
-		set("removeLuaScript", function(luaFile:String, ?ignoreAlreadyRunning:Bool = false)
+		set("removeLuaScript", function(luaFile:String)
 		{
 			var foundScript:String = findScript(luaFile);
 			if (foundScript != null)
 			{
-				if (!ignoreAlreadyRunning)
-					for (luaInstance in cast(game.luaArray, Array<Dynamic>))
+				for (luaInstance in cast(game.luaArray, Array<Dynamic>))
+				{
+					final funk:FunkinLua = cast(luaInstance, FunkinLua);
+					if (funk.scriptName == foundScript)
 					{
-						final funk:FunkinLua = cast(luaInstance, FunkinLua);
-						if (funk.scriptName == foundScript)
-						{
-							funk.stop();
-							trace('Closing script ' + funk.scriptName);
-							return true;
-						}
+						funk.stop();
+						trace('Closing script ' + funk.scriptName);
+						return true;
 					}
+				}
 			}
 			luaTrace('removeLuaScript: Script $luaFile isn\'t running!', false, false, FlxColor.RED);
 			return false;
 		});
-		set("removeHScript", function(hscriptFile:String, ?ignoreAlreadyRunning:Bool = false)
+		set("removeHScript", function(hscriptFile:String)
 		{
 			#if HSCRIPT_ALLOWED
-			var foundScript:Null<String> = null;
+			function huntHScript(name:String)
+			{
+				for (script in cast(game.hscriptArray, Array<Dynamic>))
+				{
+					final hs:HScript = cast(script, HScript);
+					if (hs.origin == name)
+					{
+						trace('Closing script ' + (hs.origin));
+						hs.destroy();
+						return true;
+					}
+				}
+				return false;
+			}
+			var hscriptFileExt:String = haxe.io.Path.extension(hscriptFile);
+			if (hscriptFileExt != null && hscriptFileExt.length > 0)
+				return huntHScript(findScript(hscriptFile, hscriptFileExt));
+
+			var huntedScripts:Bool = false;
 			for (dynamicExt in cast(FunkinLua.getCurrentMusicState().hscriptExtensions, Array<Dynamic>))
 			{
 				final ext:String = cast(dynamicExt, String);
-				foundScript = findScript(hscriptFile, ext);
-				if (foundScript != null)
-					break;
+				if (huntHScript(findScript(hscriptFile, ext)))
+					huntedScripts = true;
 			}
-			if (foundScript != null)
-			{
-				if (!ignoreAlreadyRunning)
-					for (script in cast(game.hscriptArray, Array<Dynamic>))
-					{
-						final hs:HScript = cast(script, HScript);
-						if (hs.origin == foundScript)
-						{
-							trace('Closing script ' + (hs.origin != null ? hs.origin : hscriptFile));
-							hs.destroy();
-							return true;
-						}
-					}
-			}
-			luaTrace('removeHScript: Script $hscriptFile isn\'t running!', false, false, FlxColor.RED);
-			return false;
+			return huntedScripts;
 			#else
 			luaTrace("removeHScript: HScript is not supported on this platform!", false, false, FlxColor.RED);
 			#end

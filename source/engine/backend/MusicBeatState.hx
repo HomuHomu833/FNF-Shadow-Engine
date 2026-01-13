@@ -8,8 +8,9 @@ import flixel.addons.ui.FlxUIState;
 #end
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.FlxState;
-import backend.PsychCamera;
 import flixel.util.FlxSave;
+import backend.PsychCamera;
+import haxe.io.Path;
 
 class MusicBeatState extends #if MODCHARTS_ALLOWED ModchartMusicBeatState #else FlxUIState #end
 {
@@ -613,7 +614,7 @@ class MusicBeatState extends #if MODCHARTS_ALLOWED ModchartMusicBeatState #else 
 		luaToLoad = Paths.modFolders(luaFile);
 		if (!FileSystem.exists(luaToLoad))
 		#end
-			luaToLoad = Paths.getSharedPath(luaFile);
+		luaToLoad = Paths.getSharedPath(luaFile);
 
 		if (FileSystem.exists(luaToLoad))
 		{
@@ -629,32 +630,19 @@ class MusicBeatState extends #if MODCHARTS_ALLOWED ModchartMusicBeatState #else 
 	#end
 
 	#if HSCRIPT_ALLOWED
-	public function startHScriptsNamed(scriptFile:String)
+	public function startHScriptsNamed(scriptFile:String, ?doFileMethod:String->Bool)
 	{
-		var foundScripts:Array<String> = [];
-		var matches:Bool = false;
-
-		for (ext in hscriptExtensions)
-			if (scriptFile.toLowerCase().endsWith(ext))
-			{
-				matches = true;
-				break;
-			}
-
-		if (matches)
-			foundScripts.push(scriptFile);
-		else
-			for (ext in hscriptExtensions)
-				foundScripts.push(scriptFile + ext);
-
-		for (file in foundScripts)
+		function doFile(file:String):Bool
 		{
+			if (doFileMethod != null)
+				return doFileMethod(scriptFile);
+
 			var scriptToLoad:String = '';
 			#if MODS_ALLOWED
 			scriptToLoad = Paths.modFolders(file);
 			if (!FileSystem.exists(scriptToLoad))
 			#end
-				scriptToLoad = Paths.getSharedPath(file);
+			scriptToLoad = Paths.getSharedPath(file);
 
 			if (FileSystem.exists(scriptToLoad))
 			{
@@ -664,8 +652,24 @@ class MusicBeatState extends #if MODCHARTS_ALLOWED ModchartMusicBeatState #else 
 				initHScript(scriptToLoad);
 				return true;
 			}
+			else
+			{
+				return false;
+			}
 		}
-		return false;
+
+		// if the script already has a set extension just load it directly
+		var scriptFileExt:String = Path.extension(scriptFile);
+		if (scriptFileExt != null && scriptFileExt.length > 0 && hscriptExtensions.contains(scriptFileExt))
+			return doFile(scriptFile);
+
+		// Try every ext and load what can be loaded
+		var loadedScripts:Bool = false;
+		for (ext in hscriptExtensions)
+			if (doFile(Path.withExtension(scriptFile, ext)))
+				loadedScripts = true;
+
+		return loadedScripts;
 	}
 
 	public function initHScript(file:String)
