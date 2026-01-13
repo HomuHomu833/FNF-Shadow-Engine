@@ -644,15 +644,14 @@ class PlayState extends MusicBeatState
 				#end
 
 				#if HSCRIPT_ALLOWED
-				var matches:Bool = false;
-				for (ext in hscriptExtensions)
-					if (file.toLowerCase().endsWith(ext))
-					{
-						matches = true;
-						break;
-					}
-				if (matches)
-					FunkinLua.getCurrentMusicState().initHScript(folder + file);
+
+				FunkinLua.getCurrentMusicState().startHScriptsNamed(folder + file, function(file:String) {
+					if (SScript.global.exists(file))
+							return false;
+					
+					initHScript(file);
+					return true;
+				});
 				#end
 			}
 		}
