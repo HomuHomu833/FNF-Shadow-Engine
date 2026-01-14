@@ -17,6 +17,10 @@ class File
 {
 	inline static function cwd(path:String):String
 	{
+		/*if (path.startsWith(Sys.getCwd()) || path.startsWith(lime.system.System.applicationStorageDirectory))
+			return path;
+		else
+			return Sys.getCwd() + path;*/
 		return path;
 	}
 
