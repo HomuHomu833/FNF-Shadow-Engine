@@ -33,7 +33,7 @@ class File
 	public static function getContent(path:String):Null<String>
 	{
 		#if MODS_ALLOWED
-		#if (linux && !DISABLE_LINUX_SHI)
+		#if linux
 		var actualPath:String = cwd(path);
 		actualPath = getCaseInsensitivePath(path);
 		if (actualPath == null)
@@ -55,7 +55,7 @@ class File
 	public static function getBytes(path:String):Null<haxe.io.Bytes>
 	{
 		#if MODS_ALLOWED
-		#if (linux && !DISABLE_LINUX_SHI)
+		#if linux
 		var actualPath:String = cwd(path);
 		actualPath = getCaseInsensitivePath(path);
 		if (actualPath == null)
@@ -97,7 +97,7 @@ class File
 	public static function read(path:String, binary:Bool = true):Null<FileInput>
 	{
 		#if MODS_ALLOWED
-		#if (linux && !DISABLE_LINUX_SHI)
+		#if linux
 		var actualPath:String = cwd(path);
 		actualPath = getCaseInsensitivePath(path);
 		if (actualPath == null)
@@ -114,7 +114,7 @@ class File
 	public static function write(path:String, binary:Bool = true):Null<FileOutput>
 	{
 		#if MODS_ALLOWED
-		#if (linux && !DISABLE_LINUX_SHI)
+		#if linux
 		var actualPath:String = cwd(path);
 		actualPath = getCaseInsensitivePath(path);
 		if (actualPath == null)
@@ -131,7 +131,7 @@ class File
 	public static function append(path:String, binary:Bool = true):Null<FileOutput>
 	{
 		#if MODS_ALLOWED
-		#if (linux && !DISABLE_LINUX_SHI)
+		#if linux
 		var actualPath:String = cwd(path);
 		actualPath = getCaseInsensitivePath(path);
 		if (actualPath == null)
@@ -148,7 +148,7 @@ class File
 	public static function update(path:String, binary:Bool = true):Null<FileOutput>
 	{
 		#if MODS_ALLOWED
-		#if (linux && !DISABLE_LINUX_SHI)
+		#if linux
 		var actualPath:String = cwd(path);
 		actualPath = getCaseInsensitivePath(path);
 		if (actualPath == null)
@@ -165,7 +165,7 @@ class File
 	public static function copy(srcPath:String, dstPath:String):Void
 	{
 		#if MODS_ALLOWED
-		#if (linux && !DISABLE_LINUX_SHI)
+		#if linux
 		var actualSrc:String = cwd(srcPath);
 		actualSrc = getCaseInsensitivePath(actualSrc);
 		if (actualSrc == null)

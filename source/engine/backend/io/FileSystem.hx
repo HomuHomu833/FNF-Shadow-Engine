@@ -35,7 +35,7 @@ class FileSystem
 	public static function exists(path:String):Bool
 	{
 		#if MODS_ALLOWED
-		#if (linux && !DISABLE_LINUX_SHI)
+		#if linux
 		var actualPath:String = cwd(path);
 		actualPath = getCaseInsensitivePath(path);
 		if (actualPath == null)
@@ -57,7 +57,7 @@ class FileSystem
 	public static function rename(path:String, newPath:String):Void
 	{
 		#if MODS_ALLOWED
-		#if (linux && !DISABLE_LINUX_SHI)
+		#if linux
 		var actualPath:String = cwd(path);
 		actualPath = getCaseInsensitivePath(path);
 		if (actualPath == null)
@@ -74,7 +74,7 @@ class FileSystem
 	public static function stat(path:String):Null<FileStat>
 	{
 		#if MODS_ALLOWED
-		#if (linux && !DISABLE_LINUX_SHI)
+		#if linux
 		var actualPath:String = cwd(path);
 		actualPath = getCaseInsensitivePath(path);
 		if (actualPath == null)
@@ -91,7 +91,7 @@ class FileSystem
 	public static function fullPath(path:String):String
 	{
 		#if MODS_ALLOWED
-		#if (linux && !DISABLE_LINUX_SHI)
+		#if linux
 		var actualPath:String = cwd(path);
 		actualPath = getCaseInsensitivePath(path);
 		if (actualPath == null)
@@ -108,7 +108,7 @@ class FileSystem
 	public static function absolutePath(path:String):String
 	{
 		#if MODS_ALLOWED
-		#if (linux && !DISABLE_LINUX_SHI)
+		#if linux
 		var actualPath:String = cwd(path);
 		actualPath = getCaseInsensitivePath(path);
 		if (actualPath == null)
@@ -125,7 +125,7 @@ class FileSystem
 	public static function isDirectory(path:String):Bool
 	{
 		#if MODS_ALLOWED
-		#if (linux && !DISABLE_LINUX_SHI)
+		#if linux
 		var actualPath:String = cwd(path);
 		actualPath = getCaseInsensitivePath(path);
 		if (actualPath == null)
@@ -152,7 +152,7 @@ class FileSystem
 	public static function deleteFile(path:String):Void
 	{
 		#if MODS_ALLOWED
-		#if (linux && !DISABLE_LINUX_SHI)
+		#if linux
 		var actualPath:String = cwd(path);
 		actualPath = getCaseInsensitivePath(path);
 		if (actualPath == null)
@@ -169,7 +169,7 @@ class FileSystem
 	public static function deleteDirectory(path:String):Void
 	{
 		#if MODS_ALLOWED
-		#if (linux && !DISABLE_LINUX_SHI)
+		#if linux
 		var actualPath:String = cwd(path);
 		actualPath = getCaseInsensitivePath(path);
 		if (actualPath == null)
@@ -186,7 +186,7 @@ class FileSystem
 	public static function readDirectory(path:String):Array<String>
 	{
 		#if MODS_ALLOWED
-		#if (linux && !DISABLE_LINUX_SHI)
+		#if linux
 		var actualPath:String = cwd(path);
 		actualPath = getCaseInsensitivePath(path);
 		if (actualPath == null)
