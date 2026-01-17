@@ -424,13 +424,7 @@ class PlayState extends MusicBeatState
 				#end
 
 				#if HSCRIPT_ALLOWED
-				startHScriptsNamed(folder + file, function(file:String) {
-					if (SScript.global.exists(file))
-							return false;
-					
-					initHScript(file);
-					return true;
-				});
+				startHScriptsNamed(folder + file);
 				#end
 			}
 		}
@@ -642,13 +636,7 @@ class PlayState extends MusicBeatState
 				#end
 
 				#if HSCRIPT_ALLOWED
-				startHScriptsNamed(folder + file, function(file:String) {
-					if (SScript.global.exists(file))
-							return false;
-					
-					initHScript(file);
-					return true;
-				});
+				startHScriptsNamed(folder + file);
 				#end
 			}
 		}
