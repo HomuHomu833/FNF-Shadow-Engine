@@ -198,23 +198,28 @@ class CoolUtil
 		AndroidTools.showAlertDialog(title, message, {name: "OK", func: null}, null);
 		#else*/
 		#if linux
-		function findAndRun(cmd:String, args:Array<String>):Bool
+		function tryRun(cmd:String, args:Array<String>):Bool
 		{
-			if (!FileSystem.exists(cmd))
+			try
+			{
+				var p:Process = new Process(cmd, args);
+				p.exitCode();
+				p.close();
+				return true;
+			}
+			catch (e:Dynamic)
+			{
 				return false;
-			var p:Process = new Process(cmd, args);
-			p.exitCode();
-			p.close();
-			return true;
+			}
 		}
 
-		if (findAndRun("/usr/bin/kdialog", ["--title", title, "--error", message]))
+		if (findAndRun("kdialog", ["--title", title, "--error", message]))
 			return;
-		if (findAndRun("/usr/bin/zenity", ["--error", "--title", title, "--text", message]))
+		if (findAndRun("zenity", ["--error", "--title", title, "--text", message]))
 			return;
-		if (findAndRun("/usr/bin/yad", ["--error", "--title", title, "--text", message, "--button=OK:0"]))
+		if (findAndRun("yad", ["--error", "--title", title, "--text", message, "--button=OK:0"]))
 			return;
-		if (findAndRun("/usr/bin/xmessage", ["-center", title + "\n\n" + message]))
+		if (findAndRun("xmessage", ["-center", title + "\n\n" + message]))
 			return;
 
 		trace('$title\n$message\n');
