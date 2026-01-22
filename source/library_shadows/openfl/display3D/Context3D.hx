@@ -133,13 +133,13 @@ import lime.math.Vector2;
 @:noDebug
 #end
 @:access(openfl.display3D._internal.Context3DState)
+@:access(openfl.display3D.textures.ASTCTexture)
+@:access(openfl.display3D.textures.ETC2Texture)
+@:access(openfl.display3D.textures.S3TCTexture)
 @:access(openfl.display3D.textures.CubeTexture)
 @:access(openfl.display3D.textures.RectangleTexture)
 @:access(openfl.display3D.textures.TextureBase)
 @:access(openfl.display3D.textures.Texture)
-@:access(openfl.display3D.textures.ASTCTexture)
-@:access(openfl.display3D.textures.ETC2Texture)
-@:access(openfl.display3D.textures.S3TCTexture)
 @:access(openfl.display3D.textures.VideoTexture)
 @:access(openfl.display3D.IndexBuffer3D)
 @:access(openfl.display3D.Program3D)
@@ -2429,9 +2429,12 @@ import lime.math.Vector2;
 					__bindGLTextureCubeMap(texture.__getTexture());
 				}
 
-				#if (desktop && !html5)
-				// TODO: Cache?
-				gl.enable(gl.TEXTURE_2D);
+				#if lime
+				if (__context.type == OPENGL)
+				{
+					// TODO: Cache?
+					gl.enable(gl.TEXTURE_2D);
+				}
 				#end
 
 				__contextState.textures[i] = texture;
@@ -2463,9 +2466,12 @@ import lime.math.Vector2;
 					texture.__alphaTexture.__setSamplerState(samplerState);
 					gl.uniform1i(__state.program.__agalAlphaSamplerEnabled[sampler].location, 1);
 
-					#if (desktop && !html5)
-					// TODO: Cache?
-					gl.enable(gl.TEXTURE_2D);
+					#if lime
+					if (__context.type == OPENGL)
+					{
+						// TODO: Cache?
+						gl.enable(gl.TEXTURE_2D);
+					}
 					#end
 				}
 				else
