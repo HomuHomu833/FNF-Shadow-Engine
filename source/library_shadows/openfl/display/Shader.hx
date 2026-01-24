@@ -626,33 +626,6 @@ class Shader
 			extensions += "#extension " + ext.name + " : " + ext.behavior + "\n";
 		}
 
-		var complexBlendsSupported = OpenGLRenderer.__complexBlendsSupported && isFragment;
-
-		#if lime
-		if (__context.__context.type == OPENGL)
-		{
-			complexBlendsSupported = complexBlendsSupported && (__glVersion == "150" || !StringTools.startsWith(__glVersion, "1"));
-		}
-		else if (__context.__context.type == OPENGLES)
-		{
-			complexBlendsSupported = complexBlendsSupported && !StringTools.startsWith(__glVersion, "1");
-		}
-		#end
-
-		if (complexBlendsSupported)
-		{
-			extensions += "#extension GL_KHR_blend_equation_advanced : enable\n";
-
-			#if lime
-			if (__context.__context.type == OPENGL)
-			{
-				// compiling without this gives the error
-				// 'gl_SampleID' : required extension not requested: GL_ARB_sample_shading
-				extensions += "#extension GL_ARB_sample_shading : enable\n";
-			}
-			#end
-		}
-
 		// #version must be the first directive and cannot be repeated,
 		// while #extension directives must be before any non-preprocessor tokens.
 
@@ -672,11 +645,6 @@ class Shader
 			+ "
 				#endif
 				";
-
-		if (complexBlendsSupported)
-		{
-			prefix += "#ifdef GL_KHR_blend_equation_advanced\nlayout (blend_support_all_equations) out;\n#endif\n\n";
-		}
 		
 		if (__glVersion == "300 es" || __glVersion == "310 es" || __glVersion == "320 es")
 		{
