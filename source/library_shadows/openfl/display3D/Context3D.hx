@@ -6,13 +6,13 @@ import openfl.display3D._internal.GLBuffer;
 import openfl.display3D._internal.GLFramebuffer;
 import openfl.display3D._internal.GLTexture;
 import openfl.display._internal.SamplerState;
+import openfl.display3D.textures.ASTCTexture;
 import openfl.display3D.textures.CubeTexture;
+import openfl.display3D.textures.ETC2Texture;
 import openfl.display3D.textures.RectangleTexture;
+import openfl.display3D.textures.S3TCTexture;
 import openfl.display3D.textures.TextureBase;
 import openfl.display3D.textures.Texture;
-import openfl.display3D.textures.ASTCTexture;
-import openfl.display3D.textures.ETC2Texture;
-import openfl.display3D.textures.S3TCTexture;
 import openfl.display3D.textures.VideoTexture;
 import openfl.display.BitmapData;
 import openfl.display.Stage;
@@ -134,10 +134,10 @@ import lime.math.Vector2;
 #end
 @:access(openfl.display3D._internal.Context3DState)
 @:access(openfl.display3D.textures.ASTCTexture)
-@:access(openfl.display3D.textures.ETC2Texture)
-@:access(openfl.display3D.textures.S3TCTexture)
 @:access(openfl.display3D.textures.CubeTexture)
+@:access(openfl.display3D.textures.ETC2Texture)
 @:access(openfl.display3D.textures.RectangleTexture)
+@:access(openfl.display3D.textures.S3TCTexture)
 @:access(openfl.display3D.textures.TextureBase)
 @:access(openfl.display3D.textures.Texture)
 @:access(openfl.display3D.textures.VideoTexture)
@@ -939,14 +939,14 @@ import lime.math.Vector2;
 		return new Texture(this, width, height, format, optimizeForRenderToTexture, streamingLevels);
 	}
 
-	public function createETC2Texture(data:ByteArray):ETC2Texture
-	{
-		return new ETC2Texture(this, data);
-	}
-
 	public function createASTCTexture(data:ByteArray):ASTCTexture
 	{
 		return new ASTCTexture(this, data);
+	}
+
+	public function createETC2Texture(data:ByteArray):ETC2Texture
+	{
+		return new ETC2Texture(this, data);
 	}
 
 	public function createS3TCTexture(data:ByteArray):S3TCTexture
@@ -2429,12 +2429,9 @@ import lime.math.Vector2;
 					__bindGLTextureCubeMap(texture.__getTexture());
 				}
 
-				#if lime
-				if (__context.type == OPENGL)
-				{
-					// TODO: Cache?
-					gl.enable(gl.TEXTURE_2D);
-				}
+				#if (desktop && !html5)
+				// TODO: Cache?
+				gl.enable(gl.TEXTURE_2D);
 				#end
 
 				__contextState.textures[i] = texture;
@@ -2466,12 +2463,9 @@ import lime.math.Vector2;
 					texture.__alphaTexture.__setSamplerState(samplerState);
 					gl.uniform1i(__state.program.__agalAlphaSamplerEnabled[sampler].location, 1);
 
-					#if lime
-					if (__context.type == OPENGL)
-					{
-						// TODO: Cache?
-						gl.enable(gl.TEXTURE_2D);
-					}
+					#if (desktop && !html5)
+					// TODO: Cache?
+					gl.enable(gl.TEXTURE_2D);
 					#end
 				}
 				else
