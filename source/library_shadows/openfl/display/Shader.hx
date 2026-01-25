@@ -544,7 +544,8 @@ class Shader
 		{
 			input.__disableGL(__context, textureCount);
 			textureCount++;
-			if (textureCount == gl.MAX_TEXTURE_IMAGE_UNITS) break;
+			if (textureCount == gl.MAX_TEXTURE_IMAGE_UNITS)
+				break;
 		}
 
 		for (parameter in __paramBool)
@@ -620,7 +621,6 @@ class Shader
 		var extensions = "";
 
 		var extList = (isFragment ? __glFragmentExtensions : __glVertexExtensions);
-
 		for (ext in extList)
 		{
 			extensions += "#extension " + ext.name + " : " + ext.behavior + "\n";
@@ -629,7 +629,7 @@ class Shader
 		// #version must be the first directive and cannot be repeated,
 		// while #extension directives must be before any non-preprocessor tokens.
 
-		var prefix = "#version "
+		return "#version "
 			+ __glVersion
 			+ "
       "
@@ -645,13 +645,6 @@ class Shader
 			+ "
 				#endif
 				";
-		
-		if (__glVersion == "300 es" || __glVersion == "310 es" || __glVersion == "320 es")
-		{
-			prefix += "out vec4 openfl_FragColor;\n";
-		}
-
-		return prefix;
 	}
 
 	@:noCompletion private function __initGL():Void
@@ -928,7 +921,8 @@ class Shader
 						parameter.type = parameterType;
 						parameter.__arrayLength = arrayLength;
 						#if lime
-						if (arrayLength > 0) parameter.__uniformMatrix = new Float32Array(arrayLength * arrayLength);
+						if (arrayLength > 0)
+							parameter.__uniformMatrix = new Float32Array(arrayLength * arrayLength);
 						#end
 						parameter.__isFloat = true;
 						parameter.__isUniform = isUniform;
