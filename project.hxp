@@ -329,7 +329,7 @@ class Project extends HXProject
 		addAssetPath("assets/fonts", null, true);
 		addAssetPath("assets/shared");
 
-		final textureFormats = ["ASTC", "ETC2", "S3TC", "PNG"];
+		final textureFormats = ["ASTC", "S3TC", "PNG"];
 		var hasFormat = false;
 
 		for (format in textureFormats)
