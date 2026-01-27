@@ -126,16 +126,16 @@ class SystemInfo extends FramerateCategory
 			#elseif linux
 			var process = new Process("lscpu", []);
 			if (process.exitCode() != 0)
-				throw 'Could not fetch CPU information';
-
+			    throw 'Could not fetch CPU information';
+			
 			for (line in process.stdout.readAll().toString().split("\n"))
 			{
-				var trimmedLine = line.trim();
-				if (trimmedLine.startsWith("Model name:"))
-				{
-					cpuName = trimmedLine.substr(trimmedLine.indexOf(":") + 1).trim();
-					break;
-				}
+			    var trimmedLine = line.trim();
+			    if (trimmedLine.startsWith("Model name:"))
+			    {
+			        cpuName = trimmedLine.substr(trimmedLine.indexOf(":") + 1).trim();
+			        break;
+			    }
 			}
 			#elseif android
 			cpuName = (VERSION.SDK_INT >= VERSION_CODES.S) ? Build.SOC_MODEL : Build.HARDWARE;
@@ -152,57 +152,7 @@ class SystemInfo extends FramerateCategory
 		{
 			if (flixel.FlxG.stage.context3D != null && flixel.FlxG.stage.context3D.gl != null)
 			{
-				var rawRenderer:String = Std.string(flixel.FlxG.stage.context3D.gl.getParameter(flixel.FlxG.stage.context3D.gl.RENDERER)).trim();
-				gpuName = rawRenderer.split("/")[0].trim();
-				if (rawRenderer.startsWith("ANGLE"))
-				{
-					var inner:String = rawRenderer;
-
-					// unwrap ANGLE(...)
-					final angleRe:EReg = ~/^ANGLE\s*\((.*)\)$/;
-					if (angleRe.match(rawRenderer))
-						inner = angleRe.matched(1);
-
-					var gpuNameOut:String = null;
-					var depth:Int = 0;
-					var start:Int = -1;
-
-					for (i in 0...inner.length)
-					{
-						var c = inner.charAt(i);
-
-						if (c == "(")
-						{
-							depth++;
-							if (depth == 1)
-								start = i;
-						}
-						else if (c == ")")
-						{
-							if (depth == 1 && start != -1)
-							{
-								var span:String = inner.substr(start + 1, i - start - 1);
-
-								// ignore pure PCI hex IDs
-								if (!~/^0x[0-9A-Fa-f]+$/.match(span))
-									if (span.indexOf("(") != -1)
-										gpuNameOut = span;
-									else if (gpuNameOut == null)
-										gpuNameOut = span;
-							}
-							depth--;
-						}
-					}
-
-					if (gpuNameOut == null)
-						gpuNameOut = inner.split(",")[0].trim();
-
-					// strip embedded PCI IDs
-					gpuNameOut = ~/\s*\(0x[0-9A-Fa-f]+\)/g.replace(gpuNameOut, "");
-					gpuNameOut = gpuNameOut.trim();
-
-					gpuName = 'ANGLE ($gpuNameOut)';
-				}
+				gpuName = Std.string(flixel.FlxG.stage.context3D.gl.getParameter(flixel.FlxG.stage.context3D.gl.RENDERER)).split("/")[0].trim();
 				#if !flash
 				var size = FlxG.bitmap.maxTextureSize;
 				gpuMaxSize = size + "x" + size;
