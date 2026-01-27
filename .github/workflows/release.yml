@@ -215,7 +215,7 @@ jobs:
           name: macOSBuild-Universal-S3TC
           path: /home/runner/macOSBuild-Universal
 
-      - name: Tar macOS x86_64 Build For Release
+      - name: Tar macOS Universal Build For Release
         run: |
           cd /home/runner/macOSBuild-Universal
           tar czf "/home/runner/${{ env.PROJECT_NAME }}-S3TC-macOS-Universal.tar" .
