@@ -14,7 +14,7 @@ A highly modified Psych Engine 0.7.3.
 Ready to be source-modded.
 
 > [!NOTE]
-> For the lore of this engine see [ORIGIN.md](./ORIGIN.md).
+> For the lore of this engine see [ORIGIN.md](./docs/ORIGIN.md).
 
 ## Differences Between The Original
 - Uses our haxelib forks for backporting and fixing stuff

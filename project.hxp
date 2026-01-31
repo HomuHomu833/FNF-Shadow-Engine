@@ -399,7 +399,7 @@ class Project extends HXProject
 			for (path => px in sizes)
 				addIcon('icons/ios/SE-Icon-Default-${path}.png', px);
 
-			addIcon("icons/ios/SE-Icon-Default-1024x1024.png"); // lime requires default as well
+			addIcon("icons/ios/SE-Icon-Default-1024x1024.png"); // lime requires default aswell
 		}
 		else
 		{
