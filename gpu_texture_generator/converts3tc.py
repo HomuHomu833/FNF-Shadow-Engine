@@ -3,32 +3,43 @@ import subprocess
 import argparse
 import shutil
 import sys
-import shutil as sh_util
+import requests
 
 temp_output = "temp_dds"
+TEXCONV_LINK = "https://github.com/microsoft/DirectXTex/releases/latest/download/texconv.exe"
+
+def download_texconv(dest_path):
+    print("texconv.exe not found, attempting download...")
+    try:
+        response = requests.get(TEXCONV_LINK, stream=True)
+        response.raise_for_status()
+        with open(dest_path, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+        print("Downloaded texconv.exe successfully.")
+    except Exception as e:
+        print(f"Failed to download texconv.exe: {e}")
+        sys.exit(1)
 
 def get_texconv_path():
-    """Return the path to texconv.exe in the same folder as this script."""
     script_dir = os.path.dirname(os.path.abspath(__file__))
     exe_name = "texconv.exe"
     texconv_path = os.path.join(script_dir, exe_name)
     if not os.path.isfile(texconv_path):
-        print(f"Error: '{exe_name}' not found. Please install it from https://github.com/Microsoft/DirectXTex/releases")
-        sys.exit(1)
+        download_texconv(texconv_path)
     return texconv_path
 
 def check_wine():
-    """Check if wine is available on non-Windows systems."""
-    if sh_util.which("wine") is None:
+    if shutil.which("wine") is None:
         print("Error: 'wine' not found on this system. Please install wine to run texconv.exe.")
         sys.exit(1)
     return "wine"
 
 def run_command(command, use_wine=False):
+    env = os.environ.copy()
+    if use_wine:
+        env["WINEDEBUG"] = "-all"
     try:
-        env = os.environ.copy()
-        if use_wine:
-            env["WINEDEBUG"] = "-all"
         subprocess.run(command, check=True, env=env)
     except subprocess.CalledProcessError as e:
         print(f"Error running command: {e}")
@@ -52,7 +63,6 @@ def main():
     os.makedirs(temp_output, exist_ok=True)
 
     texconv_tool = get_texconv_path()
-
     if os.name != "nt":
         wine_cmd = check_wine()
     else:
@@ -70,31 +80,26 @@ def main():
                 final_dds_path = os.path.join(output_dir, os.path.splitext(file)[0] + ".dds")
                 temp_dds_path = os.path.join(temp_output, os.path.splitext(file)[0] + ".dds")
 
-                try:
-                    command = [
-                        texconv_tool,
-                        "-f", "DXT5",
-                        "-m", "1",
-                        "-if", "CUBIC",
-                        "-bc", "u",
-                        "-y",
-                        "-o", temp_output,
-                        input_path
-                    ]
+                command = [
+                    texconv_tool,
+                    "-f", "DXT5",
+                    "-m", "1",
+                    "-if", "CUBIC",
+                    "-bc", "u",
+                    "-y",
+                    "-o", temp_output,
+                    input_path
+                ]
+                if wine_cmd:
+                    command = [wine_cmd] + command
 
-                    if wine_cmd:
-                        command = [wine_cmd] + command
+                print(f"Converting {file} -> {final_dds_path}...")
+                run_command(command, use_wine=bool(wine_cmd))
 
-                    print(f"Converting {file} -> {final_dds_path}...")
-                    run_command(command)
-
-                    if os.path.exists(temp_dds_path):
-                        shutil.move(temp_dds_path, final_dds_path)
-                    else:
-                        print(f"Failed to find output DDS for {file}")
-
-                except Exception as e:
-                    print(f"Error processing image {input_path}: {e}")
+                if os.path.exists(temp_dds_path):
+                    shutil.move(temp_dds_path, final_dds_path)
+                else:
+                    print(f"Warning: output DDS not found for {file}")
 
     try:
         if os.path.exists(temp_output):

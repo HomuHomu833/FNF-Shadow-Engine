@@ -5,7 +5,6 @@ from PIL import Image
 import sys
 
 def get_astcenc_path():
-    """Return the path to astcenc executable in the same folder as this script."""
     script_dir = os.path.dirname(os.path.abspath(__file__))
     exe_name = "astcenc.exe" if os.name == "nt" else "astcenc"
     astcenc_path = os.path.join(script_dir, exe_name)
@@ -49,27 +48,23 @@ def main():
                 os.makedirs(output_dir, exist_ok=True)
                 output_path = os.path.join(output_dir, file.replace(".png", ".astc"))
 
-                try:
-                    with Image.open(input_path) as img:
-                        width, height = img.size
+                with Image.open(input_path) as img:
+                    width, height = img.size
 
-                    block_size = "4x4" if width <= 512 and height <= 512 else "8x8"
+                block_size = "4x4" if width <= 512 and height <= 512 else "8x8"
 
-                    command = [
-                        astcenc_tool,
-                        "-cl",
-                        input_path,
-                        output_path,
-                        block_size,
-                        "-thorough",
-                        "-perceptual"
-                    ]
+                command = [
+                    astcenc_tool,
+                    "-cl",
+                    input_path,
+                    output_path,
+                    block_size,
+                    "-thorough",
+                    "-perceptual"
+                ]
 
-                    print(f"Compressing {file} ({width}x{height}) -> {output_path} with block size {block_size}...")
-                    run_command(command)
-
-                except Exception as e:
-                    print(f"Error processing image {input_path}: {e}")
+                print(f"Compressing {file} ({width}x{height}) -> {output_path} with block size {block_size}...")
+                run_command(command)
 
     print("Processing complete.")
 
