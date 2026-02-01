@@ -30,13 +30,9 @@ class FlxGraphicsShader extends GraphicsShader
 	@:glFragmentHeader("
 		uniform bool hasTransform;  // TODO: Is this still needed? Apparently, yes!
 		uniform bool hasColorTransform;
-		uniform bool premultiplyAlpha;
 		vec4 flixel_texture2D(sampler2D bitmap, vec2 coord)
 		{
 			vec4 color = texture2D(bitmap, coord);
-
-			if (premultiplyAlpha)
-				color.rgb *= color.a;
 
 			if (!(hasTransform || openfl_HasColorTransform))
 				return color;
