@@ -1062,12 +1062,12 @@ class ChartingState extends MusicBeatState
 		tab_group.add(noteTypeDropDown);
 
 		var row3:Int = row2 + rowStep;
-		var check_disableNoteRGB:ShadowCheckbox = new ShadowCheckbox(pad, row3, "Disable Note RGB", (_song.disableNoteRGB == true), function(checked:Bool)
+		var check_disableNoteCustomColor:ShadowCheckbox = new ShadowCheckbox(pad, row3, "Disable Note Custom Color", (_song.disableNoteCustomColor == true), function(checked:Bool)
 		{
-			_song.disableNoteRGB = checked;
+			_song.disableNoteCustomColor = checked;
 			updateGrid();
 		});
-		tab_group.add(check_disableNoteRGB);
+		tab_group.add(check_disableNoteCustomColor);
 
 		var row4:Int = row3 + ShadowStyle.HEIGHT_CHECKBOX + rowGap + 4;
 		tab_group.add(new ShadowLabel(pad, row4, "Note Texture (Player):", ShadowStyle.FONT_SIZE_SM, ShadowStyle.TEXT_SECONDARY));

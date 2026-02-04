@@ -1,11 +1,12 @@
 package objects;
 
+import shaders.ColorSwap;
 import shaders.RGBPalette;
 import shaders.PixelSplashShader.PixelSplashShaderRef;
 
 class SustainSplash extends FlxSprite
 {
-	public static var DEFAULT_TEXTURE:String = 'holdCover';
+	public static var DEFAULT_TEXTURE:String = 'holdCovers/holdCover';
 
 	public static var startCrochet:Float;
 	public static var frameRate:Int;
@@ -19,6 +20,7 @@ class SustainSplash extends FlxSprite
 	public var noteData(default, null):Int;
 	public var targetStrumTime(default, null):Float;
 	public var mustPress(default, null):Bool = true;
+	public var colorSwap:ColorSwap;
 	public var rgbShaders(default, null):Array<Array<PixelSplashShaderRef>> = [[], []];
 
 	private var curTexture:String = null;
@@ -27,19 +29,27 @@ class SustainSplash extends FlxSprite
 
 	public static function init(group:FlxTypedGroup<SustainSplash>, startCrochet:Float, frameRate:Int):Void
 	{
+		if (ClientPrefs.data.disableRGBNotes)
+			DEFAULT_TEXTURE = 'holdCover';
+
 		SustainSplash.startCrochet = startCrochet;
 		SustainSplash.frameRate = frameRate;
 		SustainSplash.mainGroup = group;
 
-		final textures:Array<String> = [texture];
-		if (!useRGBShader)
+		final textures:Array<String> = [];
+		if (!useRGBShader || ClientPrefs.data.disableRGBNotes)
 		{
-			textures.pop();
 			textures.push('${texture}Purple');
 			textures.push('${texture}Blue');
 			textures.push('${texture}Green');
 			textures.push('${texture}Red');
 		}
+		else
+			textures.push(texture);
+
+		if (PlayState.isPixelStage)
+			for (i in 0...textures.length)
+				textures[i] = 'pixelUI/' + textures[i];
 
 		for (img in textures)
 			Paths.getSparrowAtlas(img);
@@ -134,6 +144,9 @@ class SustainSplash extends FlxSprite
 		// SHADOW TODO: This breaks offsets need to figure it out later
 		// flipY = ClientPrefs.data.downScroll;
 
+		if (PlayState.isPixelStage)
+			texture = 'pixelUI/' + texture;
+
 		frames = Paths.getSparrowAtlas(texture);
 		animation.finishCallback = (name:String) ->
 		{
@@ -150,45 +163,71 @@ class SustainSplash extends FlxSprite
 		animation.addByPrefix('end', 'holdCoverEnd0', 24, false);
 		animation.play('start', true, false, 0);
 
+		if (PlayState.isPixelStage)
+		{
+			setGraphicSize(Std.int(width * PlayState.daPixelZoom / 2.5));
+			updateHitbox();
+		}
+
 		antialiasing = PlayState.isPixelStage ? false : ClientPrefs.data.antialiasing;
-		offset.set(PlayState.isPixelStage ? 112.5 : 106.25, 100);
+		offset.set(PlayState.isPixelStage ? -60.25 : 106.25, PlayState.isPixelStage ? -30 : 100);
 	}
 
 	private function initRGBShader():Void
 	{
 		if (strumNote != null)
 		{
-			if (PlayState.SONG != null && PlayState.SONG.disableNoteRGB)
+			if (PlayState.SONG != null && PlayState.SONG.disableNoteCustomColor)
 				useRGBShader = false;
 
 			var shaderID:Int = mustPress ? 0 : 1;
 
-			if (rgbShaders[shaderID][noteData] == null)
+			if (ClientPrefs.data.disableRGBNotes)
 			{
-				var rgbShader = new PixelSplashShaderRef();
-				rgbShaders[shaderID][noteData] = rgbShader;
+				if (colorSwap == null)
+					colorSwap = new ColorSwap();
+				shader = colorSwap.shader;
+				if (noteData > -1 && noteData < ClientPrefs.data.arrowHSV.length)
+				{
+					colorSwap.hue = ClientPrefs.data.arrowHSV[noteData][0] / 360;
+					colorSwap.saturation = ClientPrefs.data.arrowHSV[noteData][1] / 100;
+					colorSwap.brightness = ClientPrefs.data.arrowHSV[noteData][2] / 100;
+				}
 			}
+			else
+			{
+				if (rgbShaders[shaderID][noteData] == null)
+				{
+					rgbShader = new PixelSplashShaderRef();
+					rgbShaders[shaderID][noteData] = rgbShader;
+				}
 
-			if (rgbShader != null)
-				rgbShader.shader.mult.value[0] = 0.0;
+				if (rgbShader != null)
+					rgbShader.shader.mult.value[0] = 0.0;
 
-			rgbShader = rgbShaders[shaderID][noteData];
-			this.shader = rgbShader.shader;
-			rgbShader.copyValues(useRGBShader ? Note.initializeGlobalRGBShader(noteData) : null);
+				rgbShader = rgbShaders[shaderID][noteData];
+				shader = rgbShader.shader;
+				rgbShader.copyValues(useRGBShader ? Note.initializeGlobalRGBShader(noteData) : null);
+			}
 		}
 	}
 
 	private function precacheSustainSplash():Void
 	{
-		final textures:Array<String> = [texture];
-		if (!useRGBShader)
+		final textures:Array<String> = [];
+		if (!useRGBShader || ClientPrefs.data.disableRGBNotes)
 		{
-			textures.pop();
 			textures.push('${texture}Purple');
 			textures.push('${texture}Blue');
 			textures.push('${texture}Green');
 			textures.push('${texture}Red');
 		}
+		else
+			textures.push(texture);
+
+		if (PlayState.isPixelStage)
+			for (i in 0...textures.length)
+				textures[i] = 'pixelUI/' + textures[i];
 
 		for (img in textures)
 			Paths.getSparrowAtlas(img);
@@ -196,9 +235,8 @@ class SustainSplash extends FlxSprite
 
 	private static function getTextureNameFromData(noteData:Int):String
 	{
-		if (useRGBShader)
-			return texture;
-		else
+		if (!useRGBShader || ClientPrefs.data.disableRGBNotes)
+		{
 			return switch (noteData)
 			{
 				case 0: '${texture}Purple';
@@ -207,6 +245,9 @@ class SustainSplash extends FlxSprite
 				case 3: '${texture}Red';
 				default: texture;
 			}
+		}
+		else
+			return texture;
 	}
 
 	override function update(elapsed:Float)

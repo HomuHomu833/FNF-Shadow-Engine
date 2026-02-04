@@ -39,6 +39,8 @@ import states.TitleState;
 	public var hideHud:Bool = false;
 	public var uiTheme:String = 'dark';
 	public var noteOffset:Int = 0;
+	public var disableRGBNotes:Bool = false;
+	public var arrowHSV:Array<Array<Int>> = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
 	public var arrowRGB:Array<Array<FlxColor>> = [
 		[0xFFC24B99, 0xFFFFFFFF, 0xFF3C1F56],
 		[0xFF00FFFF, 0xFFFFFFFF, 0xFF1542B7],

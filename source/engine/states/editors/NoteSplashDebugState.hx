@@ -38,7 +38,7 @@ class NoteSplashDebugState extends MusicBeatState
 	var UI_settingsPanel:ShadowPanel;
 	var camOther:FlxCamera;
 
-	public static final defaultTexture:String = 'noteSplashes';
+	public static var defaultTexture:String = 'noteSplashes/noteSplashes';
 
 	override function create()
 	{
@@ -53,6 +53,9 @@ class NoteSplashDebugState extends MusicBeatState
 		selection = new FlxSprite(0, 270).makeGraphic(150, 150, FlxColor.BLACK);
 		selection.alpha = 0.4;
 		add(selection);
+
+		if (ClientPrefs.data.disableRGBNotes)
+			defaultTexture = 'noteSplashes';
 
 		notes = new FlxTypedGroup<StrumNote>();
 		add(notes);
@@ -71,7 +74,7 @@ class NoteSplashDebugState extends MusicBeatState
 
 			var splash:FlxSprite = new FlxSprite(x, y);
 			splash.setPosition(splash.x - Note.swagWidth * 0.95, splash.y - Note.swagWidth);
-			splash.shader = note.rgbShader.parent.shader;
+			splash.shader = ClientPrefs.data.disableRGBNotes ? note.colorSwap.shader : note.rgbShader.parent.shader;
 			splash.antialiasing = ClientPrefs.data.antialiasing;
 			splashes.add(splash);
 		}
@@ -96,9 +99,9 @@ class NoteSplashDebugState extends MusicBeatState
 		imageInputText = new ShadowTextInput(innerX, innerY + 22, 360, defaultTexture);
 		imageInputText.input.callback = function(text:String, action:String)
 		{
-			if (action == ShadowInputText.ENTER_ACTION)
-			{
-				imageInputText.setFocus(false);
+			/*if (action == ShadowInputText.ENTER_ACTION)
+			{*/
+				//imageInputText.setFocus(false);
 				textureName = text;
 				try
 				{
@@ -114,7 +117,7 @@ class NoteSplashDebugState extends MusicBeatState
 					missingText.screenCenter(Y);
 					missingText.visible = true;
 					missingTextBG.visible = true;
-					FlxG.sound.play(Paths.sound('cancelMenu'));
+					//FlxG.sound.play(Paths.sound('cancelMenu'));
 
 					new FlxTimer().start(2.5, function(tmr:FlxTimer)
 					{
@@ -122,11 +125,11 @@ class NoteSplashDebugState extends MusicBeatState
 						missingTextBG.visible = false;
 					});
 				}
-			}
+			/*}
 			else
 			{
 				trace('changed image to $text');
-			}
+			}*/
 		};
 		UI_settingsPanel.add(imageInputText);
 
@@ -400,17 +403,14 @@ class NoteSplashDebugState extends MusicBeatState
 
 	function loadFrames()
 	{
-		texturePath = 'noteSplashes/' + textureName;
-		if (!Paths.fileExists('images/' + texturePath + '.${Paths.IMAGE_EXT}', IMAGE) && !Paths.fileExists('images/' + texturePath + '.${Paths.GPU_IMAGE_EXT}', Paths.getImageAssetType(Paths.GPU_IMAGE_EXT)))
-			texturePath = textureName;
 		splashes.forEachAlive(function(spr:FlxSprite)
 		{
-			spr.frames = Paths.getSparrowAtlas(texturePath);
+			spr.frames = Paths.getSparrowAtlas(textureName);
 		});
 
 		// Initialize config
 		NoteSplash.configs.clear();
-		config = NoteSplash.precacheConfig(texturePath);
+		config = NoteSplash.precacheConfig(textureName);
 		if (config == null)
 			config = NoteSplash.precacheConfig(NoteSplash.defaultNoteSplash);
 		nameInputText.text = config.anim;
@@ -435,7 +435,7 @@ class NoteSplashDebugState extends MusicBeatState
 		for (offGroup in config.offsets)
 			strToSave += '\n' + offGroup[0] + ' ' + offGroup[1];
 
-		var pathSplit:Array<String> = (Paths.getPath('images/$texturePath.png', IMAGE, true).split('.png')[0]).split(':');
+		var pathSplit:Array<String> = (Paths.getPath('images/$textureName.png', IMAGE, true).split('.png')[0]).split(':');
 		var path:String = pathSplit[pathSplit.length - 1].trim() + '.txt';
 		var assetsDir:String = '';
 		savedText.text = 'Saved to: $path';

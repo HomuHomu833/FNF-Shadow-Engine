@@ -1,5 +1,6 @@
 package objects;
 
+import shaders.ColorSwap;
 import shaders.RGBPalette;
 import shaders.PixelSplashShader.PixelSplashShaderRef;
 import flixel.graphics.frames.FlxFrame;
@@ -14,13 +15,14 @@ typedef NoteSplashConfig =
 
 class NoteSplash extends FlxSprite
 {
+	public var colorSwap:ColorSwap = null;
 	public var rgbShader:PixelSplashShaderRef;
 
 	private var idleAnim:String;
 	private var _textureLoaded:String = null;
 	private var _configLoaded:String = null;
 
-	public static var defaultNoteSplash(default, never):String = 'noteSplashes/noteSplashes';
+	public static var defaultNoteSplash(get, never):String;
 	public static var configs:Map<String, NoteSplashConfig> = new Map<String, NoteSplashConfig>();
 
 	public function new(x:Float = 0, y:Float = 0)
@@ -33,8 +35,17 @@ class NoteSplash extends FlxSprite
 		else
 			skin = defaultNoteSplash + getSplashSkinPostfix();
 
-		rgbShader = new PixelSplashShaderRef();
-		shader = rgbShader.shader;
+		if (ClientPrefs.data.disableRGBNotes)
+		{
+			colorSwap = new ColorSwap();
+			shader = colorSwap.shader;
+		}
+		else
+		{
+			rgbShader = new PixelSplashShaderRef();
+			shader = rgbShader.shader;
+		}
+
 		precacheConfig(skin);
 		_configLoaded = skin;
 		scrollFactor.set();
@@ -64,39 +75,66 @@ class NoteSplash extends FlxSprite
 
 		var config:NoteSplashConfig = null;
 		if (_textureLoaded != texture)
-			config = loadAnims(texture);
+			config = loadAnims((PlayState.isPixelStage ? 'pixelUI/' : '') + texture);
 		else
 			config = precacheConfig(_configLoaded);
 
 		var tempShader:RGBPalette = null;
-		if ((note == null || note.noteSplashData.useRGBShader) && (PlayState.SONG == null || !PlayState.SONG.disableNoteRGB))
+		if (ClientPrefs.data.disableRGBNotes)
 		{
-			// If Note RGB is enabled:
-			if (note != null && !note.noteSplashData.useGlobalShader)
+			var hue:Float = 0;
+			var saturation:Float = 0;
+			var brightness:Float = 0;
+
+			if (direction > -1 && direction < ClientPrefs.data.arrowHSV.length)
 			{
-				if (note.noteSplashData.r != -1)
-					note.rgbShader.r = note.noteSplashData.r;
-				if (note.noteSplashData.g != -1)
-					note.rgbShader.g = note.noteSplashData.g;
-				if (note.noteSplashData.b != -1)
-					note.rgbShader.b = note.noteSplashData.b;
-				tempShader = note.rgbShader.parent;
+				hue = ClientPrefs.data.arrowHSV[direction][0] / 360;
+				saturation = ClientPrefs.data.arrowHSV[direction][1] / 100;
+				brightness = ClientPrefs.data.arrowHSV[direction][2] / 100;
+
+				if (note != null)
+				{
+					hue = note.noteSplashHue;
+					saturation = note.noteSplashSaturation;
+					brightness = note.noteSplashBrightness;
+				}
 			}
-			else
-				tempShader = Note.globalRgbShaders[direction];
+
+			colorSwap.hue = hue;
+			colorSwap.saturation = saturation;
+			colorSwap.brightness = brightness;
+		}
+		else
+		{
+			if ((note == null || note.noteSplashData.useRGBShader) && (PlayState.SONG == null || !PlayState.SONG.disableNoteCustomColor))
+			{
+				if (note != null && !note.noteSplashData.useGlobalShader)
+				{
+					if (note.noteSplashData.r != -1)
+						note.rgbShader.r = note.noteSplashData.r;
+					if (note.noteSplashData.g != -1)
+						note.rgbShader.g = note.noteSplashData.g;
+					if (note.noteSplashData.b != -1)
+						note.rgbShader.b = note.noteSplashData.b;
+					tempShader = note.rgbShader.parent;
+				}
+				else
+					tempShader = Note.globalRgbShaders[direction];
+			}
 		}
 
 		alpha = ClientPrefs.data.splashAlpha;
 		if (note != null)
 			alpha = note.noteSplashData.a;
-		rgbShader.copyValues(tempShader);
+		if (!ClientPrefs.data.disableRGBNotes)
+			rgbShader.copyValues(tempShader);
 
 		if (note != null)
 			antialiasing = note.noteSplashData.antialiasing;
 		if (PlayState.isPixelStage || !ClientPrefs.data.antialiasing)
 			antialiasing = false;
 
-		_textureLoaded = texture;
+		_textureLoaded = (PlayState.isPixelStage ? 'pixelUI/' : '') + texture;
 		offset.set(10, 10);
 
 		var animNum:Int = FlxG.random.int(1, maxAnims);
@@ -221,4 +259,7 @@ class NoteSplash extends FlxSprite
 
 		super.update(elapsed);
 	}
+
+	private static function get_defaultNoteSplash():String
+		return ClientPrefs.data.disableRGBNotes ? 'noteSplashes' : 'noteSplashes/noteSplashes';
 }
