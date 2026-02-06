@@ -1,5 +1,6 @@
 package mobile.substates;
 
+#if MOBILE_CONTROLS_ALLOWED
 import flixel.FlxObject;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.display.FlxGridOverlay;
@@ -317,3 +318,4 @@ class MobileControlSelectSubState extends MusicBeatSubstate
 		updatePosText();
 	}
 }
+#end

@@ -19,6 +19,7 @@ import psychlua.HScript;
 import tea.SScript;
 #end
 // Mobile Controls
+#if MOBILE_CONTROLS_ALLOWED
 import mobile.objects.MobileControls;
 import mobile.objects.IMobileControls;
 import mobile.objects.Hitbox;
@@ -27,6 +28,7 @@ import mobile.objects.TouchButton;
 import mobile.input.MobileInputID;
 import mobile.backend.MobileData;
 import mobile.input.MobileInputManager;
+#end
 // Android
 #if android
 import android.content.Context as AndroidContext;

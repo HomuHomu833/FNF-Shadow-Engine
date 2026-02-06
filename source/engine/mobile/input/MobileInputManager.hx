@@ -1,5 +1,6 @@
 package mobile.input;
 
+#if MOBILE_CONTROLS_ALLOWED
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
 import haxe.ds.Map;
 
@@ -190,3 +191,4 @@ enum ButtonsStates
 	RELEASED;
 	JUST_RELEASED;
 }
+#end

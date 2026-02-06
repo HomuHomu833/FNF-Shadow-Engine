@@ -111,7 +111,9 @@ class ControlsSubState extends MusicBeatSubstate
 		text.setScale(0.4);
 		add(text);
 
+		#if MOBILE_CONTROLS_ALLOWED
 		addTouchPad("LEFT_FULL", "A_B_C");
+		#end
 
 		createTexts();
 	}
@@ -285,33 +287,33 @@ class ControlsSubState extends MusicBeatSubstate
 
 		if (!binding)
 		{
-			if ((FlxG.keys.justPressed.ESCAPE || touchPad.buttonB.justPressed) || FlxG.gamepads.anyJustPressed(B))
+			if ((FlxG.keys.justPressed.ESCAPE #if MOBILE_CONTROLS_ALLOWED || touchPad.buttonB.justPressed #end) || FlxG.gamepads.anyJustPressed(B))
 			{
 				ClientPrefs.saveSettings();
 				close();
 				return;
 			}
-			if ((FlxG.keys.justPressed.CONTROL || touchPad.buttonC.justPressed)
+			if ((FlxG.keys.justPressed.CONTROL #if MOBILE_CONTROLS_ALLOWED || touchPad.buttonC.justPressed #end)
 				|| FlxG.gamepads.anyJustPressed(LEFT_SHOULDER)
 				|| FlxG.gamepads.anyJustPressed(RIGHT_SHOULDER))
 				swapMode();
 
-			if ((FlxG.keys.justPressed.LEFT || touchPad.buttonLeft.justPressed)
-				|| (FlxG.keys.justPressed.RIGHT || touchPad.buttonRight.justPressed)
+			if ((FlxG.keys.justPressed.LEFT #if MOBILE_CONTROLS_ALLOWED || touchPad.buttonLeft.justPressed #end)
+				|| (FlxG.keys.justPressed.RIGHT #if MOBILE_CONTROLS_ALLOWED || touchPad.buttonRight.justPressed #end)
 				|| FlxG.gamepads.anyJustPressed(DPAD_LEFT)
 				|| FlxG.gamepads.anyJustPressed(DPAD_RIGHT)
 				|| FlxG.gamepads.anyJustPressed(LEFT_STICK_DIGITAL_LEFT)
 				|| FlxG.gamepads.anyJustPressed(LEFT_STICK_DIGITAL_RIGHT))
 				updateAlt(true);
 
-			if ((FlxG.keys.justPressed.UP || touchPad.buttonUp.justPressed) || FlxG.gamepads.anyJustPressed(DPAD_UP) || FlxG.gamepads.anyJustPressed(LEFT_STICK_DIGITAL_UP))
+			if ((FlxG.keys.justPressed.UP #if MOBILE_CONTROLS_ALLOWED || touchPad.buttonUp.justPressed #end) || FlxG.gamepads.anyJustPressed(DPAD_UP) || FlxG.gamepads.anyJustPressed(LEFT_STICK_DIGITAL_UP))
 				updateText(-1);
-			else if ((FlxG.keys.justPressed.DOWN || touchPad.buttonDown.justPressed)
+			else if ((FlxG.keys.justPressed.DOWN #if MOBILE_CONTROLS_ALLOWED || touchPad.buttonDown.justPressed #end)
 				|| FlxG.gamepads.anyJustPressed(DPAD_DOWN)
 				|| FlxG.gamepads.anyJustPressed(LEFT_STICK_DIGITAL_DOWN))
 				updateText(1);
 
-			if ((FlxG.keys.justPressed.ENTER || touchPad.buttonA.justPressed) || FlxG.gamepads.anyJustPressed(START) || FlxG.gamepads.anyJustPressed(A))
+			if ((FlxG.keys.justPressed.ENTER #if MOBILE_CONTROLS_ALLOWED || touchPad.buttonA.justPressed #end) || FlxG.gamepads.anyJustPressed(START) || FlxG.gamepads.anyJustPressed(A))
 			{
 				if (options[curOptions[curSelected]][1] != defaultKey)
 				{
@@ -352,7 +354,7 @@ class ControlsSubState extends MusicBeatSubstate
 		{
 			var altNum:Int = curAlt ? 1 : 0;
 			var curOption:Array<Dynamic> = options[curOptions[curSelected]];
-			if ((FlxG.keys.pressed.ESCAPE || touchPad.buttonB.pressed) || FlxG.gamepads.anyPressed(B))
+			if ((FlxG.keys.pressed.ESCAPE #if MOBILE_CONTROLS_ALLOWED || touchPad.buttonB.pressed #end) || FlxG.gamepads.anyPressed(B))
 			{
 				holdingEsc += elapsed;
 				if (holdingEsc > 0.5)
@@ -361,7 +363,7 @@ class ControlsSubState extends MusicBeatSubstate
 					closeBinding();
 				}
 			}
-			else if ((FlxG.keys.pressed.BACKSPACE || touchPad.buttonC.pressed) || FlxG.gamepads.anyPressed(BACK))
+			else if ((FlxG.keys.pressed.BACKSPACE #if MOBILE_CONTROLS_ALLOWED || touchPad.buttonC.pressed #end) || FlxG.gamepads.anyPressed(BACK))
 			{
 				holdingEsc += elapsed;
 				if (holdingEsc > 0.5)

@@ -63,7 +63,9 @@ class MenuCharacterEditorState extends MusicBeatState
 
 		makeOffsetUI();
 
+		#if MOBILE_CONTROLS_ALLOWED
 		addTouchPad("MENU_CHARACTER", "MENU_CHARACTER");
+		#end
 
 		super.create();
 	}
@@ -303,38 +305,38 @@ class MenuCharacterEditorState extends MusicBeatState
 		if (!blockInput)
 		{
 			ClientPrefs.toggleVolumeKeys(true);
-			if (FlxG.keys.justPressed.ESCAPE #if android || FlxG.android.justPressed.BACK #end || touchPad.buttonB.justPressed)
+			if (FlxG.keys.justPressed.ESCAPE #if android || FlxG.android.justPressed.BACK #end #if MOBILE_CONTROLS_ALLOWED || touchPad.buttonB.justPressed #end)
 			{
 				MusicBeatState.switchState(new states.editors.MasterEditorMenu());
 				FlxG.sound.playMusic(Paths.music('freakyMenu'));
 			}
 
 			var shiftMult:Int = 1;
-			if (FlxG.keys.pressed.SHIFT || touchPad.buttonA.pressed)
+			if (FlxG.keys.pressed.SHIFT #if MOBILE_CONTROLS_ALLOWED || touchPad.buttonA.pressed #end)
 				shiftMult = 10;
 
-			if (FlxG.keys.justPressed.LEFT || touchPad.buttonLeft.justPressed)
+			if (FlxG.keys.justPressed.LEFT #if MOBILE_CONTROLS_ALLOWED || touchPad.buttonLeft.justPressed #end)
 			{
 				characterFile.position[0] += shiftMult;
 				updateOffset();
 			}
-			if (FlxG.keys.justPressed.RIGHT || touchPad.buttonRight.justPressed)
+			if (FlxG.keys.justPressed.RIGHT #if MOBILE_CONTROLS_ALLOWED || touchPad.buttonRight.justPressed #end)
 			{
 				characterFile.position[0] -= shiftMult;
 				updateOffset();
 			}
-			if (FlxG.keys.justPressed.UP || touchPad.buttonUp.justPressed)
+			if (FlxG.keys.justPressed.UP #if MOBILE_CONTROLS_ALLOWED || touchPad.buttonUp.justPressed #end)
 			{
 				characterFile.position[1] += shiftMult;
 				updateOffset();
 			}
-			if (FlxG.keys.justPressed.DOWN || touchPad.buttonDown.justPressed)
+			if (FlxG.keys.justPressed.DOWN #if MOBILE_CONTROLS_ALLOWED || touchPad.buttonDown.justPressed #end)
 			{
 				characterFile.position[1] -= shiftMult;
 				updateOffset();
 			}
 
-			if (FlxG.keys.justPressed.SPACE || touchPad.buttonC.justPressed && curTypeSelected == 1)
+			if (FlxG.keys.justPressed.SPACE #if MOBILE_CONTROLS_ALLOWED || touchPad.buttonC.justPressed #end && curTypeSelected == 1)
 			{
 				grpWeekCharacters.members[curTypeSelected].animation.play('confirm', true);
 			}

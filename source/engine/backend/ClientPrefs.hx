@@ -148,6 +148,7 @@ class ClientPrefs
 		'fullscreen' => [LEFT_STICK_CLICK],
 		'fpsCounter' => [RIGHT_STICK_CLICK]
 	];
+	#if MOBILE_CONTROLS_ALLOWED
 	public static var mobileBinds:Map<String, Array<MobileInputID>> = [
 		'note_up' => [MobileInputID.NOTE_UP, MobileInputID.UP2],
 		'note_left' => [MobileInputID.NOTE_LEFT, MobileInputID.LEFT2],
@@ -165,6 +166,7 @@ class ClientPrefs
 		'fpsCounter' => [MobileInputID.NONE]
 	];
 	public static var defaultMobileBinds:Map<String, Array<MobileInputID>> = null;
+	#end
 	public static var defaultKeys:Map<String, Array<FlxKey>> = null;
 	public static var defaultButtons:Map<String, Array<FlxGamepadInputID>> = null;
 
@@ -185,20 +187,24 @@ class ClientPrefs
 	{
 		var keyBind:Array<FlxKey> = keyBinds.get(key);
 		var gamepadBind:Array<FlxGamepadInputID> = gamepadBinds.get(key);
+		#if MOBILE_CONTROLS_ALLOWED
 		var mobileBind:Array<MobileInputID> = mobileBinds.get(key);
+		while (mobileBind != null && mobileBind.contains(NONE))
+			mobileBind.remove(NONE);
+		#end
 		while (keyBind != null && keyBind.contains(NONE))
 			keyBind.remove(NONE);
 		while (gamepadBind != null && gamepadBind.contains(NONE))
 			gamepadBind.remove(NONE);
-		while (mobileBind != null && mobileBind.contains(NONE))
-			mobileBind.remove(NONE);
 	}
 
 	public static function loadDefaultKeys()
 	{
 		defaultKeys = keyBinds.copy();
 		defaultButtons = gamepadBinds.copy();
+		#if MOBILE_CONTROLS_ALLOWED
 		defaultMobileBinds = mobileBinds.copy();
+		#end
 	}
 
 	public static function saveSettings()
@@ -213,7 +219,9 @@ class ClientPrefs
 		save.bind('controls_v3', CoolUtil.getSavePath());
 		save.data.keyboard = keyBinds;
 		save.data.gamepad = gamepadBinds;
+		#if MOBILE_CONTROLS_ALLOWED
 		save.data.mobile = mobileBinds;
+		#end
 		save.flush();
 		FlxG.log.add("Settings saved!");
 	}
@@ -279,6 +287,7 @@ class ClientPrefs
 					if (gamepadBinds.exists(control))
 						gamepadBinds.set(control, keys);
 			}
+			#if MOBILE_CONTROLS_ALLOWED
 			if (save.data.mobile != null)
 			{
 				var loadedControls:Map<String, Array<MobileInputID>> = save.data.mobile;
@@ -286,6 +295,7 @@ class ClientPrefs
 					if (mobileBinds.exists(control))
 						mobileBinds.set(control, keys);
 			}
+			#end
 			reloadVolumeKeys();
 		}
 	}

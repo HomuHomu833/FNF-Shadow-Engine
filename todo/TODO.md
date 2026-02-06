@@ -8,3 +8,5 @@
 - Add multikey support(?)
 - Rewrite the Input System(?)
 - Refactor/Redo Scriptable States Support(?)
+- HSV Note Skin Textures
+- Fix Pixel Hold Splash End Position

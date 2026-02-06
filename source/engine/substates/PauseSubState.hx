@@ -152,15 +152,10 @@ class PauseSubState extends MusicBeatSubstate
 		regenMenu();
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 
-		if (PlayState.chartingMode)
-		{
-			addTouchPad("LEFT_FULL", "A");
-		}
-		else
-		{
-			addTouchPad("UP_DOWN", "A");
-		}
+		#if MOBILE_CONTROLS_ALLOWED
+		addTouchPad(PlayState.chartingMode ? "LEFT_FULL" : "UP_DOWN", "A");
 		addTouchPadCamera(false);
+		#end
 
 		super.create();
 	}
@@ -348,8 +343,13 @@ class PauseSubState extends MusicBeatSubstate
 			}
 		}
 
+		#if MOBILE_CONTROLS_ALLOWED
 		if (touchPad == null) // sometimes it dosent add the vpad, hopefully this fixes it
+		{
+			addTouchPad(PlayState.chartingMode ? "LEFT_FULL" : "UP_DOWN", "A");
 			addTouchPadCamera(false);
+		}
+		#end
 	}
 
 	function deleteSkipTimeText()

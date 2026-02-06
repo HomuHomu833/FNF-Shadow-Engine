@@ -62,7 +62,9 @@ class NotesSubStateOld extends MusicBeatSubstate
 
 		spawnNotes();
 
+		#if MOBILE_CONTROLS_ALLOWED
 		addTouchPad('LEFT_FULL', 'A_B_C');
+		#end
 	}
 
 	function spawnNotes()
@@ -151,7 +153,7 @@ class NotesSubStateOld extends MusicBeatSubstate
 					updateValue(1);
 					FlxG.sound.play(Paths.sound('scrollMenu'));
 				}
-				else if (touchPad.buttonC.justPressed || controls.RESET)
+				else if (#if MOBILE_CONTROLS_ALLOWED touchPad.buttonC.justPressed || #end controls.RESET)
 				{
 					resetValue(curSelected, typeSelected);
 					FlxG.sound.play(Paths.sound('scrollMenu'));
@@ -210,7 +212,7 @@ class NotesSubStateOld extends MusicBeatSubstate
 				changeType(1);
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 			}
-			if (touchPad.buttonC.justPressed || controls.RESET)
+			if (#if MOBILE_CONTROLS_ALLOWED touchPad.buttonC.justPressed || #end controls.RESET)
 			{
 				for (i in 0...3)
 				{

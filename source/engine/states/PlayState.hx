@@ -651,6 +651,7 @@ class PlayState extends MusicBeatState
 		cacheCountdown();
 		cachePopUpScore();
 
+		#if MOBILE_CONTROLS_ALLOWED
 		addMobileControls(false);
 		mobileControls.instance.visible = true;
 		mobileControls.onButtonDown.add(onButtonPress);
@@ -662,6 +663,7 @@ class PlayState extends MusicBeatState
 			if (touchPad.buttonP != null)
 				button.deadZones.push(touchPad.buttonP);
 		});
+		#end
 
 		super.create();
 		Paths.clearUnusedMemory();
@@ -1739,7 +1741,9 @@ class PlayState extends MusicBeatState
 				twn.active = true);
 
 			paused = false;
+			#if MOBILE_CONTROLS_ALLOWED
 			mobileControls.instance.visible = touchPad.visible = true;
+			#end
 			resetRPC(startTimer != null && startTimer.finished);
 			#if (target.threaded)
 			runSongSyncThread();
@@ -1844,7 +1848,7 @@ class PlayState extends MusicBeatState
 			botplayTxt.alpha = 1 - Math.sin((Math.PI * botplaySine) / 180);
 		}
 
-		if ((controls.PAUSE #if android || FlxG.android.justReleased.BACK #end || touchPad.buttonP.justPressed)
+		if ((controls.PAUSE #if android || FlxG.android.justReleased.BACK #end #if MOBILE_CONTROLS_ALLOWED || touchPad.buttonP.justPressed #end)
 			&& (startedCountdown && canPause))
 		{
 			var ret:Dynamic = callOnScripts('onPause', null, true);
@@ -2633,7 +2637,9 @@ class PlayState extends MusicBeatState
 
 	public function endSong()
 	{
+		#if MOBILE_CONTROLS_ALLOWED
 		mobileControls.instance.visible = touchPad.visible = false;
+		#end
 		// Should kill you if you tried to cheat
 		if (!startingSong)
 		{
@@ -3157,6 +3163,7 @@ class PlayState extends MusicBeatState
 		return -1;
 	}
 
+	#if MOBILE_CONTROLS_ALLOWED
 	private function onButtonPress(button:TouchButton):Void
 	{
 		if (button.IDs.filter(id -> id.toString().startsWith("EXTRA")).length > 0)
@@ -3180,6 +3187,7 @@ class PlayState extends MusicBeatState
 			keyReleased(buttonCode);
 		callOnScripts('onButtonRelease', [buttonCode]);
 	}
+	#end
 
 	// Hold notes
 	private function keysCheck():Void

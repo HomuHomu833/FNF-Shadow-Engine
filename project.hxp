@@ -31,6 +31,7 @@ class Project extends HXProject
 	static final LUA_ALLOWED:CompileFlag = CompileFlag.get("LUA_ALLOWED");
 	static final VIDEOS_ALLOWED:CompileFlag = CompileFlag.get("VIDEOS_ALLOWED");
 	static final DISCORD_ALLOWED:CompileFlag = CompileFlag.get("DISCORD_ALLOWED");
+	static final MOBILE_CONTROLS_ALLOWED:CompileFlag = CompileFlag.get("MOBILE_CONTROLS_ALLOWED");
 	static final DCEBUILD:CompileFlag = CompileFlag.get("DCEBUILD");
 
 	static final ENABLE_ASCII_ART:Bool = true;
@@ -185,20 +186,17 @@ class Project extends HXProject
 		window.background = 0x000000;
 		window.hardware = true;
 		window.vsync = false;
+		window.orientation = Orientation.LANDSCAPE;
 
 		if (isWeb())
 			window.resizable = true;
-
-		if (isDesktop())
+		else if (isDesktop())
 		{
-			window.orientation = Orientation.LANDSCAPE;
 			window.fullscreen = false;
 			window.resizable = true;
-			window.vsync = false;
 		}
 		else if (isMobile())
 		{
-			window.orientation = Orientation.LANDSCAPE;
 			window.fullscreen = true;
 			window.resizable = false;
 			window.allowShaders = true;
@@ -214,6 +212,7 @@ class Project extends HXProject
 		LUA_ALLOWED.integrate((isDesktop() && !isHashLink()) || isMobile());
 		VIDEOS_ALLOWED.integrate((isDesktop() && !isHashLink()) || (isMobile() && !isIOSSimulator()));
 		DISCORD_ALLOWED.integrate((isDesktop() && !isHashLink()));
+		MOBILE_CONTROLS_ALLOWED.integrate(isMobile());
 		DCEBUILD.integrate(false);
 
 		setHaxedef("FLX_NO_FOCUS_LOST_SCREEN");
@@ -324,6 +323,8 @@ class Project extends HXProject
 		addAssetPath("assets/embed", null, true);
 		addAssetPath("assets/fonts", null, true);
 		addAssetPath("assets/shared");
+		if (MOBILE_CONTROLS_ALLOWED.isEnabled())
+			addAssetPath("assets/mobile", 'assets/shared/mobile', false);
 
 		final textureFormats = ["ASTC", "S3TC", "PNG"];
 		var hasFormat = false;

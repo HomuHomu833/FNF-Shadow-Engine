@@ -76,8 +76,10 @@ class GameOverSubstate extends MusicBeatSubstate
 		setOnScripts('inGameOver', true);
 		callOnScripts('onGameOverStart', []);
 
+		#if MOBILE_CONTROLS_ALLOWED
 		addTouchPad("NONE", "A_B");
 		addTouchPadCamera(false);
+		#end
 
 		super.create();
 	}

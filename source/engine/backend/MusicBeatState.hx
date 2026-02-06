@@ -51,6 +51,7 @@ class MusicBeatState extends FlxTransitionableState implements IMusicState
 		return Controls.instance;
 	}
 
+	#if MOBILE_CONTROLS_ALLOWED
 	public var touchPad:TouchPad;
 	public var touchPadCam:FlxCamera;
 	public var luaTouchPad:TouchPad;
@@ -254,12 +255,15 @@ class MusicBeatState extends FlxTransitionableState implements IMusicState
 		}
 		return false;
 	}
+	#end
 
 	override function destroy()
 	{
+		#if MOBILE_CONTROLS_ALLOWED
 		removeTouchPad();
 		removeLuaTouchPad();
 		removeMobileControls();
+		#end
 
 		#if LUA_ALLOWED
 		for (lua in luaArray)

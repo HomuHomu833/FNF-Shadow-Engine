@@ -53,15 +53,18 @@ interface IMusicState
 
 	private function get_controls():Controls;
 
+	#if MOBILE_CONTROLS_ALLOWED
 	public var touchPad:TouchPad;
 	public var touchPadCam:FlxCamera;
 	public var luaTouchPad:TouchPad;
 	public var luaTouchPadCam:FlxCamera;
 	public var mobileControls:IMobileControls;
 	public var mobileControlsCam:FlxCamera;
+	#end
 
 	public function remove(basic:FlxBasic, splice:Bool = false):FlxBasic;
 
+	#if MOBILE_CONTROLS_ALLOWED
 	public function addTouchPad(DPad:String, Action:String):Void;
 	public function removeTouchPad():Void;
 	public function addMobileControls(defaultDrawTarget:Bool = false):Void;
@@ -75,6 +78,7 @@ interface IMusicState
 	public function luaTouchPadJustPressed(button:Dynamic):Bool;
 	public function luaTouchPadJustReleased(button:Dynamic):Bool;
 	public function luaTouchPadReleased(button:Dynamic):Bool;
+	#end
 
 	public function openSubState(subState:FlxSubState):Void;
 	public function closeSubState():Void;

@@ -1,5 +1,6 @@
 package mobile.objects;
 
+#if MOBILE_CONTROLS_ALLOWED
 import openfl.display.BitmapData;
 import openfl.display.Shape;
 import flixel.graphics.FlxGraphic;
@@ -223,3 +224,4 @@ class Hitbox extends MobileInputManager implements IMobileControls
 		return FlxG.bitmap.add(bitmap);
 	}
 }
+#end

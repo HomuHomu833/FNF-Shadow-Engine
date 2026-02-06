@@ -51,6 +51,7 @@ class MusicBeatSubstate extends FlxSubState implements IMusicState
 	private function get_controls():Controls
 		return Controls.instance;
 
+	#if MOBILE_CONTROLS_ALLOWED
 	public var touchPad:TouchPad;
 	public var touchPadCam:FlxCamera;
 	public var luaTouchPad:TouchPad;
@@ -254,13 +255,16 @@ class MusicBeatSubstate extends FlxSubState implements IMusicState
 		}
 		return false;
 	}
+	#end
 
 	override function destroy()
 	{
 		controls.isInSubstate = false;
+		#if MOBILE_CONTROLS_ALLOWED
 		removeTouchPad();
 		removeLuaTouchPad();
 		removeMobileControls();
+		#end
 
 		#if LUA_ALLOWED
 		for (lua in luaArray)

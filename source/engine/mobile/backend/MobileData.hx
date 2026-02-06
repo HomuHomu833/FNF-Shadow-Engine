@@ -1,5 +1,6 @@
 package mobile.backend;
 
+#if MOBILE_CONTROLS_ALLOWED
 import haxe.ds.Map;
 import haxe.io.Path;
 import openfl.utils.Assets;
@@ -156,3 +157,4 @@ enum ExtraActions
 	DOUBLE;
 	NONE;
 }
+#end

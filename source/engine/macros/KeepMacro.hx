@@ -41,9 +41,6 @@ class KeepMacro
 			"flixel.addons.transition",
 			"flixel.addons.util",
 			"flixel.addons.weapon",
-			// MOBILE
-			"mobile",
-			#if android "android", #end
 			// OPENFL SYSTEM
 			"openfl.system",
 			// VIDEOS

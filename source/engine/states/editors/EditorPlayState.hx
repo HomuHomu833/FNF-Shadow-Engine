@@ -154,6 +154,7 @@ class EditorPlayState extends MusicBeatSubstate
 		DiscordClient.changePresence('Playtesting on Chart Editor', PlayState.SONG.song, null, true, songLength);
 		#end
 
+		#if MOBILE_CONTROLS_ALLOWED
 		addMobileControls(false);
 		mobileControls.instance.visible = true;
 		mobileControls.onButtonDown.add(onButtonPress);
@@ -165,15 +166,18 @@ class EditorPlayState extends MusicBeatSubstate
 			if (touchPad.buttonP != null)
 				button.deadZones.push(touchPad.buttonP);
 		});
+		#end
 
 		RecalculateRating();
 	}
 
 	override function update(elapsed:Float)
 	{
-		if (touchPad.buttonP.justPressed || FlxG.keys.justPressed.ESCAPE #if android || FlxG.android.justPressed.BACK #end)
+		if (#if MOBILE_CONTROLS_ALLOWED touchPad.buttonP.justPressed || #end FlxG.keys.justPressed.ESCAPE #if android || FlxG.android.justPressed.BACK #end)
 		{
+			#if MOBILE_CONTROLS_ALLOWED
 			mobileControls.instance.visible = false;
+			#end
 			endSong();
 			super.update(elapsed);
 			return;
@@ -828,6 +832,7 @@ class EditorPlayState extends MusicBeatSubstate
 		}
 	}
 
+	#if MOBILE_CONTROLS_ALLOWED
 	private function onButtonPress(button:TouchButton):Void
 	{
 		if (button.IDs.filter(id -> id.toString().startsWith("EXTRA")).length > 0)
@@ -847,6 +852,7 @@ class EditorPlayState extends MusicBeatSubstate
 		if (buttonCode > -1)
 			keyReleased(buttonCode);
 	}
+	#end
 
 	// Hold notes
 	private function keysCheck():Void

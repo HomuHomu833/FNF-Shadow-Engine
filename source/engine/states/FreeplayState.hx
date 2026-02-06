@@ -184,7 +184,9 @@ class FreeplayState extends MusicBeatState
 		changeSelection();
 		updateTexts();
 
+		#if MOBILE_CONTROLS_ALLOWED
 		addTouchPad("LEFT_FULL", "A_B_C_X_Y_Z");
+		#end
 		super.create();
 	}
 
@@ -193,8 +195,10 @@ class FreeplayState extends MusicBeatState
 		changeSelection(0, false);
 		persistentUpdate = true;
 		super.closeSubState();
+		#if MOBILE_CONTROLS_ALLOWED
 		removeTouchPad();
 		addTouchPad("LEFT_FULL", "A_B_C_X_Y_Z");
+		#end
 	}
 
 	public function addSong(songName:String, weekNum:Int, songCharacter:String, color:Int)
@@ -242,7 +246,7 @@ class FreeplayState extends MusicBeatState
 		}
 
 		var shiftMult:Int = 1;
-		if ((FlxG.keys.pressed.SHIFT || touchPad.buttonZ.pressed) && !player.playingMusic)
+		if ((FlxG.keys.pressed.SHIFT #if MOBILE_CONTROLS_ALLOWED || touchPad.buttonZ.pressed #end) && !player.playingMusic)
 			shiftMult = 3;
 
 		if (!player.playingMusic)
@@ -331,13 +335,15 @@ class FreeplayState extends MusicBeatState
 			}
 		}
 
-		if ((FlxG.keys.justPressed.CONTROL || touchPad.buttonC.justPressed) && !player.playingMusic)
+		if ((FlxG.keys.justPressed.CONTROL #if MOBILE_CONTROLS_ALLOWED || touchPad.buttonC.justPressed #end) && !player.playingMusic)
 		{
 			persistentUpdate = false;
 			openSubState(new GameplayChangersSubstate());
+			#if MOBILE_CONTROLS_ALLOWED
 			removeTouchPad();
+			#end
 		}
-		else if (FlxG.keys.justPressed.SPACE || touchPad.buttonX.justPressed)
+		else if (FlxG.keys.justPressed.SPACE #if MOBILE_CONTROLS_ALLOWED || touchPad.buttonX.justPressed #end)
 		{
 			if (instPlaying != curSelected && !player.playingMusic)
 			{
@@ -439,11 +445,13 @@ class FreeplayState extends MusicBeatState
 			DiscordClient.loadModRPC();
 			#end
 		}
-		else if ((controls.RESET || touchPad.buttonY.justPressed) && !player.playingMusic)
+		else if ((controls.RESET #if MOBILE_CONTROLS_ALLOWED || touchPad.buttonY.justPressed #end) && !player.playingMusic)
 		{
 			persistentUpdate = false;
 			openSubState(new ResetScoreSubState(songs[curSelected].songName, curDifficulty, songs[curSelected].songCharacter));
+			#if MOBILE_CONTROLS_ALLOWED
 			removeTouchPad();
+			#end
 			FlxG.sound.play(Paths.sound('scrollMenu'));
 		}
 		updateTexts(elapsed);

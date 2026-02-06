@@ -164,8 +164,10 @@ class ResultsScreen extends MusicBeatSubstate
 		{
 			obj.cameras = [fuckingCamera];
 		});
+		#if MOBILE_CONTROLS_ALLOWED
 		addTouchPad("NONE", "A_B");
 		addTouchPadCamera(false);
+		#end
 		super.create();
 	}
 
@@ -183,7 +185,7 @@ class ResultsScreen extends MusicBeatSubstate
 			PlayState.instance.endCallback();
 		}
 
-		if (touchPad.buttonB.justPressed || controls.RESET)
+		if (#if MOBILE_CONTROLS_ALLOWED touchPad.buttonB.justPressed || #end controls.RESET)
 		{
 			PlayState.instance.paused = true; // For lua
 			FlxG.sound.music.volume = 0;
