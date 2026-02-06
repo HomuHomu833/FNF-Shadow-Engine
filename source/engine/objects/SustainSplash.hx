@@ -285,11 +285,6 @@ class SustainSplash extends FlxSprite
 	{
 		super.kill();
 
-		for (arr in rgbShaders)
-			for (shader in arr)
-				if (shader != null)
-					shader.shader.mult.value[0] = 0.0;
-
 		noteData = -1;
 		targetStrumTime = 0;
 		strumNote = null;
