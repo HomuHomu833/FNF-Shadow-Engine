@@ -6,7 +6,7 @@ import shaders.PixelSplashShader.PixelSplashShaderRef;
 
 class SustainSplash extends FlxSprite
 {
-	public static var DEFAULT_TEXTURE:String = 'holdCovers/holdCover';
+	public static var DEFAULT_TEXTURE(get, never):String;
 
 	public static var startCrochet:Float;
 	public static var frameRate:Int;
@@ -29,9 +29,6 @@ class SustainSplash extends FlxSprite
 
 	public static function init(group:FlxTypedGroup<SustainSplash>, startCrochet:Float, frameRate:Int):Void
 	{
-		if (ClientPrefs.data.disableRGBNotes)
-			DEFAULT_TEXTURE = 'holdCover';
-
 		SustainSplash.startCrochet = startCrochet;
 		SustainSplash.frameRate = frameRate;
 		SustainSplash.mainGroup = group;
@@ -170,7 +167,7 @@ class SustainSplash extends FlxSprite
 		}
 
 		antialiasing = PlayState.isPixelStage ? false : ClientPrefs.data.antialiasing;
-		offset.set(PlayState.isPixelStage ? -60.25 : 106.25, PlayState.isPixelStage ? -30 : 100);
+		offset.set(PlayState.isPixelStage ? -46 : 106.25, PlayState.isPixelStage ? -40 : 100);
 	}
 
 	private function initRGBShader():Void
@@ -339,4 +336,10 @@ class SustainSplash extends FlxSprite
 	@:noCompletion
 	override function set_angle(value:Float):Float
 		return value;
+
+	public static function get_DEFAULT_TEXTURE():String
+		if (ClientPrefs.data.disableRGBNotes)
+			return 'holdCover';
+		else
+			return 'holdCovers/holdCover';
 }

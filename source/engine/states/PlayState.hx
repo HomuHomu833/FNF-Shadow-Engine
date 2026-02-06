@@ -514,7 +514,7 @@ class PlayState extends MusicBeatState
 
 		var splash:NoteSplash = new NoteSplash(100, 100);
 		grpNoteSplashes.add(splash);
-		SustainSplash.init(grpHoldSplashes, Conductor.stepCrochet * 1.25 / 1000 / playbackRate, Math.floor(24 / 100 * PlayState.SONG.bpm));
+		SustainSplash.init(grpHoldSplashes, Conductor.stepCrochet * 1.25 / 1000 / playbackRate, Math.floor(isPixelStage ? 22 : 24 / 100 * PlayState.SONG.bpm));
 
 		opponentStrums = new FlxTypedGroup<StrumNote>();
 		playerStrums = new FlxTypedGroup<StrumNote>();
