@@ -636,12 +636,15 @@ class MusicBeatState extends FlxTransitionableState implements IMusicState
 			if (doFileMethod != null)
 				return doFileMethod(scriptFile);
 
-			var scriptToLoad:String = '';
-			#if MODS_ALLOWED
-			scriptToLoad = Paths.modFolders(file);
+			var scriptToLoad:String = file;
 			if (!FileSystem.exists(scriptToLoad))
-			#end
-			scriptToLoad = Paths.getSharedPath(file);
+			{
+				#if MODS_ALLOWED
+				scriptToLoad = Paths.modFolders(file);
+				if (!FileSystem.exists(scriptToLoad))
+				#end
+					scriptToLoad = Paths.getSharedPath(file);
+			}
 
 			if (FileSystem.exists(scriptToLoad))
 			{
