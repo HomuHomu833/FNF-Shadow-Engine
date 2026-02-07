@@ -596,5 +596,5 @@ class Note extends FlxSkewedSprite
 	}
 
 	private static function get_defaultNoteSkin():String
-		return ClientPrefs.data.disableRGBNotes ? 'NOTE_assets' : 'noteSkins/NOTE_assets';
+		return !ClientPrefs.data.disableRGBNotes ? 'noteSkins/NOTE_assets' : 'NOTE_assets';
 }
