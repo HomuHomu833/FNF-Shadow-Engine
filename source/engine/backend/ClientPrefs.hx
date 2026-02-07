@@ -141,7 +141,7 @@ class ClientPrefs
 		'ui_left' => [DPAD_LEFT, LEFT_STICK_DIGITAL_LEFT],
 		'ui_down' => [DPAD_DOWN, LEFT_STICK_DIGITAL_DOWN],
 		'ui_right' => [DPAD_RIGHT, LEFT_STICK_DIGITAL_RIGHT],
-		'accept' => [A, START],
+		'accept' => [A],
 		'back' => [B],
 		'pause' => [START],
 		'reset' => [BACK],

@@ -1,5 +1,6 @@
 package objects;
 
+import backend.InputFormatter;
 import flixel.group.FlxGroup;
 import flixel.ui.FlxBar;
 import flixel.util.FlxStringUtil;
@@ -251,9 +252,9 @@ class MusicPlayer extends FlxGroup
 		if (playingMusic)
 		{
 			if (instance.controls.mobileC)
-				instance.bottomText.text = "Press X to Pause / Press B to Exit / Press C to Reset the Song";
+				instance.bottomText.text = 'Press ${instance.controls.controllerMode ? InputFormatter.getGamepadName(START).toUpperCase() : 'X'} to Pause / Press ${instance.controls.controllerMode ? InputFormatter.getGamepadName(A).toUpperCase() : 'B'} to Exit / Press ${instance.controls.controllerMode ? InputFormatter.getGamepadName(BACK).toUpperCase() : 'Y'} to Reset the Song';
 			else
-				instance.bottomText.text = "Press SPACE to Pause / Press ESCAPE to Exit / Press R to Reset the Song";
+				instance.bottomText.text = 'Press ${instance.controls.controllerMode ? InputFormatter.getGamepadName(START).toUpperCase() : 'SPACE'} to Pause / Press ${instance.controls.controllerMode ? InputFormatter.getGamepadName(A).toUpperCase() : 'ESC'} to Exit / Press ${instance.controls.controllerMode ? InputFormatter.getGamepadName(BACK).toUpperCase() : 'R'} to Reset the Song';
 			positionSong();
 
 			progressBar.setRange(0, FlxG.sound.music.length);

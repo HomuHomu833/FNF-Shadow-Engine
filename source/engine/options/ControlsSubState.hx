@@ -58,13 +58,15 @@ class ControlsSubState extends MusicBeatSubstate
 
 	var gamepadColor:FlxColor = 0xfffd7194;
 	var keyboardColor:FlxColor = 0xff7192fd;
-	var onKeyboardMode:Bool = true;
+	var onKeyboardMode:Bool;
 
 	var controllerSpr:FlxSprite;
 
 	public function new()
 	{
 		super();
+
+		onKeyboardMode = !controls.controllerMode;
 
 		#if FEATURE_DISCORD_RPC
 		DiscordClient.changePresence("Controls Menu", null);
@@ -75,7 +77,7 @@ class ControlsSubState extends MusicBeatSubstate
 		options.push([true, defaultKey]);
 
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		bg.color = keyboardColor;
+		bg.color = onKeyboardMode ? keyboardColor : gamepadColor;
 		bg.antialiasing = ClientPrefs.data.antialiasing;
 		bg.screenCenter();
 		add(bg);
@@ -104,9 +106,10 @@ class ControlsSubState extends MusicBeatSubstate
 		controllerSpr.antialiasing = ClientPrefs.data.antialiasing;
 		controllerSpr.animation.add('keyboard', [0], 1, false);
 		controllerSpr.animation.add('gamepad', [1], 1, false);
+		controllerSpr.animation.play(onKeyboardMode ? 'keyboard' : 'gamepad');
 		add(controllerSpr);
 
-		var text:Alphabet = new Alphabet(60, 90, controls.mobileC ? 'C' : 'CTRL', false);
+		var text:Alphabet = new Alphabet(60, 90, controls.controllerMode ? '${InputFormatter.getGamepadName(LEFT_SHOULDER).toUpperCase()}/${InputFormatter.getGamepadName(RIGHT_SHOULDER).toUpperCase()}' : controls.mobileC ? 'C' : 'CTRL', false);
 		text.alignment = CENTERED;
 		text.setScale(0.4);
 		add(text);
