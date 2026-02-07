@@ -14,7 +14,11 @@ class SustainSplash extends FlxSprite
 	@:isVar
 	public static var texture(get, set):String = null;
 	public static var useRGBShader:Bool = true;
+	public static var forcePixelStage:Bool = false;
 	public static var noRGBTextures(default, null):Array<String> = [];
+
+	public static var playerTexture:String = null;
+	public static var opponentTexture:String = null;
 
 	public var strumNote(default, set):StrumNote;
 	public var noteData(default, null):Int;
@@ -44,7 +48,7 @@ class SustainSplash extends FlxSprite
 		else
 			textures.push(texture);
 
-		if (PlayState.isPixelStage)
+		if (PlayState.isPixelStage || forcePixelStage)
 			for (i in 0...textures.length)
 				textures[i] = 'pixelUI/' + textures[i];
 
@@ -119,7 +123,7 @@ class SustainSplash extends FlxSprite
 
 		initRGBShader();
 
-		reloadSustainSplash(getTextureNameFromData(noteData));
+		reloadSustainSplash(getTextureNameFromData(noteData, mustPress));
 	}
 
 	public function reloadSustainSplash(texture:String, force:Bool = false):Void
@@ -141,7 +145,7 @@ class SustainSplash extends FlxSprite
 		// SHADOW TODO: This breaks offsets need to figure it out later
 		// flipY = ClientPrefs.data.downScroll;
 
-		if (PlayState.isPixelStage)
+		if (PlayState.isPixelStage || forcePixelStage)
 			texture = 'pixelUI/' + texture;
 
 		frames = Paths.getSparrowAtlas(texture);
@@ -160,14 +164,14 @@ class SustainSplash extends FlxSprite
 		animation.addByPrefix('end', 'holdCoverEnd0', 24, false);
 		animation.play('start', true, false, 0);
 
-		if (PlayState.isPixelStage)
+		if (PlayState.isPixelStage || forcePixelStage)
 		{
 			setGraphicSize(Std.int(width * PlayState.daPixelZoom / 2.5));
 			updateHitbox();
 		}
 
-		antialiasing = PlayState.isPixelStage ? false : ClientPrefs.data.antialiasing;
-		offset.set(PlayState.isPixelStage ? -46 : 106.25, PlayState.isPixelStage ? -40 : 100);
+		antialiasing = PlayState.isPixelStage || forcePixelStage ? false : ClientPrefs.data.antialiasing;
+		offset.set(PlayState.isPixelStage || forcePixelStage ? -46 : 106.25, PlayState.isPixelStage || forcePixelStage ? -40 : 100);
 	}
 
 	private function initRGBShader():Void
@@ -212,17 +216,23 @@ class SustainSplash extends FlxSprite
 	private function precacheSustainSplash():Void
 	{
 		final textures:Array<String> = [];
+		var texToUse:String = texture;
+		if (mustPress && playerTexture != null)
+			texToUse = playerTexture;
+		else if (!mustPress && opponentTexture != null)
+			texToUse = opponentTexture;
+
 		if (!useRGBShader || ClientPrefs.data.disableRGBNotes)
 		{
-			textures.push('${texture}Purple');
-			textures.push('${texture}Blue');
-			textures.push('${texture}Green');
-			textures.push('${texture}Red');
+			textures.push('${texToUse}Purple');
+			textures.push('${texToUse}Blue');
+			textures.push('${texToUse}Green');
+			textures.push('${texToUse}Red');
 		}
 		else
-			textures.push(texture);
+			textures.push(texToUse);
 
-		if (PlayState.isPixelStage)
+		if (PlayState.isPixelStage || forcePixelStage)
 			for (i in 0...textures.length)
 				textures[i] = 'pixelUI/' + textures[i];
 
@@ -230,21 +240,25 @@ class SustainSplash extends FlxSprite
 			Paths.getSparrowAtlas(img);
 	}
 
-	private static function getTextureNameFromData(noteData:Int):String
+	private static function getTextureNameFromData(noteData:Int, mustPress:Bool):String
 	{
+		var tex:String = mustPress ? playerTexture : opponentTexture;
+		if (tex == null)
+			tex = texture;
+
 		if (!useRGBShader || ClientPrefs.data.disableRGBNotes)
 		{
 			return switch (noteData)
 			{
-				case 0: '${texture}Purple';
-				case 1: '${texture}Blue';
-				case 2: '${texture}Green';
-				case 3: '${texture}Red';
-				default: texture;
+				case 0: '${tex}Purple';
+				case 1: '${tex}Blue';
+				case 2: '${tex}Green';
+				case 3: '${tex}Red';
+				default: tex;
 			}
 		}
 		else
-			return texture;
+			return tex;
 	}
 
 	override function update(elapsed:Float)
@@ -307,7 +321,7 @@ class SustainSplash extends FlxSprite
 
 		for (splash in SustainSplash.mainGroup.members)
 			if (splash.exists && splash.alive)
-				splash.reloadSustainSplash(getTextureNameFromData(splash.noteData), true);
+				splash.reloadSustainSplash(getTextureNameFromData(splash.noteData, splash.mustPress), true);
 
 		return value;
 	}
@@ -333,8 +347,8 @@ class SustainSplash extends FlxSprite
 		return value;
 
 	public static function get_DEFAULT_TEXTURE():String
-		if (ClientPrefs.data.disableRGBNotes)
-			return 'holdCover';
-		else
+		if (useRGBShader)
 			return 'holdCovers/holdCover';
+		else
+			return 'holdCover';
 }

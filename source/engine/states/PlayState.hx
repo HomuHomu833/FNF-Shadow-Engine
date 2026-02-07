@@ -290,6 +290,7 @@ class PlayState extends MusicBeatState
 		FlxG.cameras.add(camHUD, false);
 		FlxG.cameras.add(camOther, false);
 		grpNoteSplashes = new FlxTypedGroup<NoteSplash>();
+		NoteSplash.mainGroup = grpNoteSplashes;
 		grpHoldSplashes = new FlxTypedGroup<SustainSplash>();
 
 		persistentUpdate = true;
@@ -2671,7 +2672,7 @@ class PlayState extends MusicBeatState
 		camZooming = false;
 		inCutscene = false;
 		updateTime = false;
-		characterPlayingAsDad = false;
+		NoteSplash.forcePixelStage = SustainSplash.forcePixelStage = characterPlayingAsDad = false;
 
 		deathCounter = 0;
 		seenCutscene = false;
@@ -3642,6 +3643,7 @@ class PlayState extends MusicBeatState
 
 	override function destroy()
 	{
+		NoteSplash.mainGroup = null;
 		instance = null;
 
 		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
@@ -3974,6 +3976,27 @@ class PlayState extends MusicBeatState
 			else
 				addTextToDebug("ERROR!! couldn't change player note skin because the inserted value is null.", FlxColor.RED);
 		}
+	}
+
+	public function changeSustainSplashSkin(player:Bool, skin:String)
+	{
+		if (skin == null || skin == '')
+		{
+			addTextToDebug("ERROR!! couldn't change sustain splash skin because the inserted value is null.", FlxColor.RED);
+			return;
+		}
+
+		if (player)
+			SustainSplash.playerTexture = skin;
+		else
+			SustainSplash.opponentTexture = skin;
+
+		@:privateAccess
+		SustainSplash.mainGroup.forEachExists(function(splash:SustainSplash)
+		{
+			if (splash.mustPress == player)
+				splash.reloadSustainSplash(SustainSplash.getTextureNameFromData(splash.noteData, splash.mustPress));
+		});
 	}
 
 	public static function judgeNote(noteDiff:Float)

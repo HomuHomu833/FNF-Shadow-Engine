@@ -22,8 +22,12 @@ class NoteSplash extends FlxSprite
 	private var _textureLoaded:String = null;
 	private var _configLoaded:String = null;
 
+	public static var forcePixelStage(default, set):Bool = false;
+
 	public static var defaultNoteSplash(get, never):String;
 	public static var configs:Map<String, NoteSplashConfig> = new Map<String, NoteSplashConfig>();
+
+	public static var mainGroup:FlxTypedGroup<NoteSplash>;
 
 	public function new(x:Float = 0, y:Float = 0)
 	{
@@ -75,7 +79,7 @@ class NoteSplash extends FlxSprite
 
 		var config:NoteSplashConfig = null;
 		if (_textureLoaded != texture)
-			config = loadAnims((PlayState.isPixelStage ? 'pixelUI/' : '') + texture);
+			config = loadAnims((PlayState.isPixelStage || forcePixelStage ? 'pixelUI/' : '') + texture);
 		else
 			config = precacheConfig(_configLoaded);
 
@@ -131,10 +135,10 @@ class NoteSplash extends FlxSprite
 
 		if (note != null)
 			antialiasing = note.noteSplashData.antialiasing;
-		if (PlayState.isPixelStage || !ClientPrefs.data.antialiasing)
+		if ((PlayState.isPixelStage || forcePixelStage) || !ClientPrefs.data.antialiasing)
 			antialiasing = false;
 
-		_textureLoaded = (PlayState.isPixelStage ? 'pixelUI/' : '') + texture;
+		_textureLoaded = (PlayState.isPixelStage || forcePixelStage ? 'pixelUI/' : '') + texture;
 		offset.set(10, 10);
 
 		var animNum:Int = FlxG.random.int(1, maxAnims);
@@ -260,6 +264,22 @@ class NoteSplash extends FlxSprite
 		super.update(elapsed);
 	}
 
+	@:noCompletion
 	private static function get_defaultNoteSplash():String
-		return ClientPrefs.data.disableRGBNotes ? 'noteSplashes' : 'noteSplashes/noteSplashes';
+		return !ClientPrefs.data.disableRGBNotes ? 'noteSplashes/noteSplashes' : 'noteSplashes';
+
+	@:noCompletion
+	private static function set_forcePixelStage(value:Bool):Bool
+	{
+		forcePixelStage = value;
+		if (mainGroup != null)
+		{
+			mainGroup.forEachAlive(function(splash:NoteSplash)
+			{
+				splash._textureLoaded = null;
+				splash._configLoaded = null;
+			});
+		}
+		return value;
+	}
 }

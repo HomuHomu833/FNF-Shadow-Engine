@@ -101,6 +101,7 @@ class EditorPlayState extends MusicBeatSubstate
 		strumLineNotes = new FlxTypedGroup<StrumNote>();
 		add(strumLineNotes);
 		grpNoteSplashes = new FlxTypedGroup<NoteSplash>();
+		NoteSplash.mainGroup = grpNoteSplashes;
 		add(grpNoteSplashes);
 		grpHoldSplashes = new FlxTypedGroup<SustainSplash>();
 		add(grpHoldSplashes);
@@ -303,6 +304,8 @@ class EditorPlayState extends MusicBeatSubstate
 
 	override function destroy()
 	{
+		NoteSplash.mainGroup = null;
+
 		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
 		FlxG.stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
 		FlxG.mouse.visible = true;
