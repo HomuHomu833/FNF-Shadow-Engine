@@ -10,6 +10,7 @@
 - Applies OpenAL Soft Config For better audio
 - Slightly more accurate FPS and less RAM Usage
 - Unironically winning icons support
+- Improved Controller Support
 - Some 0.6.3 and 1.0 compability
 - Little bit Null Safety
 - Linux ARM support (FNF on Raspberry Pi baby)
