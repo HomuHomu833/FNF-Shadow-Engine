@@ -7,6 +7,9 @@ jobs:
     name: oxipng
     runs-on: ubuntu-slim
     steps:
+      - name: Checkout
+        uses: actions/checkout@main
+
       - name: Install and run oxipng
         run: |
           sudo apt update
