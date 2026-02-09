@@ -387,7 +387,7 @@ class LoadingState extends MusicBeatState
 					continue;
 				}
 				else if (FileSystem.exists(file))
-					bitmap = BitmapData.fromFile(file);
+					bitmap = Paths.getBitmapDataFromFile(file);
 				else
 				#end
 				{
@@ -465,7 +465,7 @@ class LoadingState extends MusicBeatState
 						return;
 					}
 					else if (FileSystem.exists(file))
-						bitmap = BitmapData.fromFile(file);
+						bitmap = Paths.getBitmapDataFromFile(file);
 					else
 					#end
 					{

@@ -347,8 +347,5 @@ class SustainSplash extends FlxSprite
 		return value;
 
 	public static function get_DEFAULT_TEXTURE():String
-		if (useRGBShader)
-			return 'holdCovers/holdCover';
-		else
-			return 'holdCover';
+		return 'holdCovers/holdCover';
 }
