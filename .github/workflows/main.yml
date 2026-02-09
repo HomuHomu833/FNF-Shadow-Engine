@@ -10,7 +10,8 @@ jobs:
       - name: Install and run oxipng
         run: |
           sudo apt update
-          sudo apt install oxipng -y
+          curl -LkSs -O https://github.com/oxipng/oxipng/releases/download/v10.1.0/oxipng_10.1.0-1_amd64.deb
+          sudo apt install ./oxipng_10.1.0-1_amd64.deb
           /usr/bin/find . -type f -iname "*.png" ! -path "*/.haxelib/*" ! -path "*/export/*" -exec oxipng -o max -z -s -a -v {} \;
 
       - name: Upload Artifact
