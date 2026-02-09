@@ -5,6 +5,7 @@ on: workflow_dispatch
 jobs:
   oxipng:
     name: oxipng
+    timeout-minutes: 600
     runs-on: ubuntu-slim
     steps:
       - name: Checkout
