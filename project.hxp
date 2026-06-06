@@ -229,7 +229,7 @@ class Project extends HXProject
 	function configureCompileFlags()
 	{
 setHaxedef("openfl-funkin");
-setHaxedef("lime-funkin");
+setHaxedef("lime-shadow");
 setHaxedef("flixel-funkin");
 
 		FEATURE_MODS.integrate(isDesktop() || isMobile());
