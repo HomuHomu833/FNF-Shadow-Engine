@@ -3,8 +3,8 @@
     {
       "name": "lime",
       "type": "git",
-      "ref": "543368c85c496d8b968d8295e528c76a06f8bdf9",
-      "url": "https://github.com/ShadowEngineTeam/lime"
+      "ref": null,
+      "url": "https://github.com/FunkinCrew/lime"
     },
     {
       "name": "openfl",
