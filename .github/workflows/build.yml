@@ -75,7 +75,7 @@ jobs:
           haxelib git hmm https://github.com/ShadowEngineTeam/hmm --skip-dependencies --quiet
           haxelib run hmm install --quiet
           haxelib run lime rebuild mac -arm64 -D HXCPP_ARM64
-          haxelin run lime rebuild ios
+          haxelib run lime rebuild ios
 
       - name: Configure Android
         if: ${{ inputs.name == 'Android' }}
