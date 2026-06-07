@@ -81,8 +81,8 @@
     {
       "name": "hxvlc",
       "type": "git",
-      "ref": "a7fad909ae7a21dcc0f70f98aab932a610e86884",
-      "url": "https://github.com/ShadowEngineTeam/hxvlc"
+      "ref": null,
+      "url": "https://github.com/HomuHomu833/hxvlc"
     },
     {
       "name": "flixel-animate",
