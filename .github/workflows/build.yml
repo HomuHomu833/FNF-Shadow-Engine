@@ -76,8 +76,8 @@ jobs:
           haxelib run hmm install --quiet
           haxelib run lime rebuild mac -arm64 -D HXCPP_ARM64 -release
           haxelib run lime rebuild ios -arm64 -D HXCPP_ARM64 -release
-          cd $(haxelib libpath lime)
-          ln -s ndll/iPhone/liblime.iphoneos-arm64.a ndll/iPhone/liblime.iphoneos.a
+          cd $(haxelib libpath lime)ndll/iPhone
+          ln -s liblime.iphoneos-arm64.a ndll/iPhone/liblime.iphoneos.a
 
       - name: Configure Android
         if: ${{ inputs.name == 'Android' }}
